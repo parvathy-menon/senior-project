@@ -1,41 +1,56 @@
 // this is a testing file
-import React, { Component } from 'react'
-import axios from 'axios';
+import React, { Component, Fragment } from 'react'
+import { Container } from 'semantic-ui-react';
+import { connect } from 'react-redux';
+import { getItems } from '../actions/itemActions';
+import PropTypes from 'prop-types';
+import TestingItemListItem from './TestingItemListItem';
 
-const locationSearched = 'San Francisco';
+class ItemList extends Component {
 
-export default class ItemList extends Component {
-
-    state = {
-        restaurants: [
-
-        ]
-    }
-
+    // call the getItems function from props
     componentDidMount() {
-        axios.get(`${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/search?location=${locationSearched}`, {
-            headers: {
-                Authorization: `Bearer ${process.env.REACT_APP_API_KEY}`
-            },
-            params: {
-                categories: 'breakfast_brunch',
-            }
-        })
-            .then((res) => {
-                // console.log(res);
-                console.log(res.data.businesses.region);
-                this.setState({ restaurants : res});
-            })
-            .catch((err) => {
-                console.log('error')
-            })
+        this.props.getItems();
     }
 
     render() {
+        // const { items } = this.props.item;
+        const items = this.props.item.items;
         return (
-            <div>
-
-            </div>
-        )
+            <Container className='main'>
+                {/* <Button
+                    content="add item"
+                    onClick={() => {
+                        const name = prompt('Enter Item name');
+                        if (name) {
+                            this.setState(state => ({
+                                items: [...state.items, { id: uuid(), name }]
+                            }))
+                        }
+                    }}>
+                </Button> */}
+                <Fragment>
+                    {items.map(item => (
+                        <TestingItemListItem key={item.id} item={item} />
+                    ))}
+                </Fragment>
+            </Container>
+        );
     }
 }
+
+// when bring in a action, this action must store in the props
+ItemList.propTypes = {
+    getItems: PropTypes.func.isRequired,
+    item: PropTypes.object.isRequired
+}
+
+const mapStateToProps = (state) => ({
+    // look at the reducer index file -> item: itemReducer
+    item: state.item
+});
+
+export default connect(
+    mapStateToProps,
+    { getItems }
+)(ItemList);

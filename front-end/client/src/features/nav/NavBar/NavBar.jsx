@@ -3,6 +3,19 @@ import { Menu, Container, Button } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 class NavBar extends Component {
+
+    state = {
+        //future use
+        isOpen: false
+    }
+
+    //future use
+    toggle = () => {
+        this.setState({
+            isOpen: !this.state.isOpen
+        });
+    }
+
     render() {
         return (
             <Menu inverted fixed="top">

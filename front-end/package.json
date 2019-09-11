@@ -4,15 +4,22 @@
   "description": "front and user's data backend",
   "main": "server.js",
   "dependencies": {
-    "body-parser": "^1.19.0",
+    "bcryptjs": "^2.4.3",
     "concurrently": "^4.1.2",
+    "config": "^3.2.2",
     "express": "^4.17.1",
-    "mongoose": "^5.6.13"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.6.13",
+    "nodemon": "^1.19.2"
   },
   "devDependencies": {},
   "scripts": {
+    "client-install": "npm install --prefix client",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "",
   "license": "ISC"

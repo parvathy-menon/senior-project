@@ -5,9 +5,9 @@ class ItemList extends Component {
     render() {
         return (
             <Fragment>
-            {this.props.items.map(item => (
-                <ItemListItem key={item.id} item={item}/>
-            ))}
+                {this.props.items.map(item => (
+                    <ItemListItem key={item.id} item={item} />
+                ))}
             </Fragment>
         )
     }
