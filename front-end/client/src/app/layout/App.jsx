@@ -4,9 +4,13 @@ import { Route, Switch, BrowserRouter as Router } from "react-router-dom";
 import HomePage from "../../features/home/HomePage";
 import ProfileDashboard from '../../features/Profile/ProfileDashboard';
 import Testing from '../../components/ItemList';
-// import 'bootstrap/dist/css/bootstrap.min.css';
+import store from '../store/store';
+import { loadUser } from '../actions/authActions';
 
 class App extends Component {
+  componentDidMount() {
+    store.dispatch(loadUser());
+  }
 
   render() {
     return (

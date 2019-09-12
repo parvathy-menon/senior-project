@@ -2,7 +2,7 @@
 import React, { Component, Fragment } from 'react'
 import { Container } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import { getItems } from '../actions/itemActions';
+import { getItems } from '../app/actions/itemActions';
 import PropTypes from 'prop-types';
 import TestingItemListItem from './TestingItemListItem';
 

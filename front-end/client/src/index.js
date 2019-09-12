@@ -12,7 +12,7 @@ let render = () => {
     ReactDOM.render(
         <Provider store={store}>
             <App />
-        </Provider>, 
+        </Provider>,
         rootEl)
 }
 

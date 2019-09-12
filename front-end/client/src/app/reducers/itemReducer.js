@@ -1,4 +1,4 @@
-import { GET_ITEMS, ITEMS_LOADING } from '../../actions/types';
+import { GET_ITEMS, ITEMS_LOADING } from '../actions/types';
 
 const initialState = {
     items: [],
@@ -23,7 +23,7 @@ export default function (state = initialState, action) {
                 ...state,
                 loading: true
             };
-        
+
         default:
             return state;
     }

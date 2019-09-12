@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const auth = require('../../middleware/auth');
 
 // item model
 const Item = require('../../models/Item');
@@ -16,7 +17,8 @@ router.get('/', (req, res) => {
 });
 
 // post an item
-router.post('/', (req, res) => {
+// @access Private
+router.post('/', auth, (req, res) => {
 const newItem = new Item({
     name: req.body.name
     });
@@ -24,8 +26,10 @@ const newItem = new Item({
     newItem.save().then(item => res.json(item));
 });
 
+//this function has not been implement
 // delete a item
-router.delete('/:id', (req, res) => {
+// @access Private
+router.delete('/:id', auth, (req, res) => {
     Item.findById(req.params.id)
         .then(item => item.remove().then(() => res.json({remove: true})))
         .catch(err => res.status(404).json({remove: false}));

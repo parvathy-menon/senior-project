@@ -1,6 +1,12 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { Menu, Container, Button } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import Register from '../../../components/auth/Register';
+import Logout from '../../..//components/auth/Logout';
+import Login from '../../../components/auth/LoginModal';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import LoginModal from '../../../components/auth/LoginModal';
 
 class NavBar extends Component {
 
@@ -16,7 +22,37 @@ class NavBar extends Component {
         });
     }
 
+    static propTypes = {
+        auth: PropTypes.object.isRequired
+    };
+
     render() {
+        const { isAuthenticated, user } = this.props.auth;
+
+        const authLinks = (
+            <Fragment>
+                <Menu.Item>
+                    <span className='navbar-text mr-3'>
+                        <strong>{user ? `Welcome ${user.name}` : ''}</strong>
+                    </span>
+                </Menu.Item>
+                <Menu.Item>
+                    <Logout />
+                </Menu.Item>
+            </Fragment>
+        );
+
+        const guestLinks = (
+            <Fragment>
+                <Menu.Item>
+                    <Register />
+                </Menu.Item>
+                <Menu.Item>
+                    <LoginModal />
+                </Menu.Item>
+            </Fragment>
+        );
+
         return (
             <Menu inverted fixed="top">
                 <Container>
@@ -32,11 +68,14 @@ class NavBar extends Component {
                         </Link>
                     </Menu.Item>
                     <Menu.Item position="right">
-                        <Link to="/profile">
+                        {/* <Link to="/profile">
                             Profile
                         </Link>
                         <Button basic inverted content="Login" />
-                        <Button basic inverted content="Sign Out" style={{ marginLeft: '0.5em' }} />
+                        <Button basic inverted content="Sign Out" style={{ marginLeft: '0.5em' }} /> */}
+
+                        {isAuthenticated ? authLinks : guestLinks}
+
                     </Menu.Item>
                 </Container>
             </Menu>
@@ -44,4 +83,11 @@ class NavBar extends Component {
     }
 }
 
-export default NavBar;
+const mapStateToProps = state => ({
+    auth: state.auth
+});
+
+export default connect(
+    mapStateToProps,
+    null
+)(NavBar);
