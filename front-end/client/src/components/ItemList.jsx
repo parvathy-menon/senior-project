@@ -8,6 +8,13 @@ import TestingItemListItem from './TestingItemListItem';
 
 class ItemList extends Component {
 
+    // when bring in a action, this action must store in the props
+    static propTypes = {
+        getItems: PropTypes.func.isRequired,
+        item: PropTypes.object.isRequired,
+        isAuthenticated: PropTypes.bool
+    }
+
     // call the getItems function from props
     componentDidMount() {
         this.props.getItems();
@@ -29,20 +36,17 @@ class ItemList extends Component {
                         }
                     }}>
                 </Button> */}
-                <Fragment>
-                    {items.map(item => (
-                        <TestingItemListItem key={item.id} item={item} />
-                    ))}
-                </Fragment>
+                {this.props.isAuthenticated ?
+                    <Fragment>
+                        {items.map(item => (
+                            <TestingItemListItem key={item.id} item={item} />
+                        ))}
+                    </Fragment>
+                    : "Please login to see items."
+                }
             </Container>
         );
     }
-}
-
-// when bring in a action, this action must store in the props
-ItemList.propTypes = {
-    getItems: PropTypes.func.isRequired,
-    item: PropTypes.object.isRequired
 }
 
 const mapStateToProps = (state) => ({

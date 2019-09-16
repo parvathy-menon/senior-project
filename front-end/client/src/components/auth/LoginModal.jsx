@@ -73,7 +73,11 @@ class LoginModal extends Component {
         };
 
         // Attempt to login
-        this.props.login(user);
+        this.props.login(user)
+        // .then(
+        //     (res) => this.context.router.push('/testing')
+
+        // )
     };
 
     render() {

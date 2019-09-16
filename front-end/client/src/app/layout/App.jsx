@@ -23,6 +23,7 @@ class App extends Component {
             <Route exact path='/home' component={HomePage} />
             <Route exact path='/ItemDashboard' component={HomePage} />
             <Route exact path='/profile' component={ProfileDashboard} />
+            <Route path='*' component={() => "404 NOT FOUND"} />
           </Switch>
         </div>
       </Router>
