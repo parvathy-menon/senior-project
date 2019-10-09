@@ -1,13 +1,16 @@
 click==6.6
 Flask==0.11.1
 Flask-SQLAlchemy==2.1
+-e git://github.com/gangverk/flask-swagger.git@fa4eb7d4cbebfd30d4033626160881b77ad2b156#egg=flask_swagger
 itsdangerous==0.24
 Jinja2==2.8
 MarkupSafe==0.23
 marshmallow==2.10.3
 marshmallow-sqlalchemy==0.12.0
+mongoengine==0.18.2
 nose2==0.6.5
+pymongo==3.9.0
+PyYAML==5.1.2
 six==1.10.0
 SQLAlchemy==1.1.2
 Werkzeug==0.11.11
--e git://github.com/gangverk/flask-swagger.git#egg=flask-swagger
