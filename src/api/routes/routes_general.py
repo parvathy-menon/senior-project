@@ -6,8 +6,22 @@ from flask import request
 from api.utils.responses import response_with
 from api.utils import responses as resp
 from api.models.model_author import Author, AuthorSchema
-
+from api.models.user import users
+import mongoengine
+import pymongo
+from bson.objectid import ObjectId
 route_path_general = Blueprint("route_path_general", __name__)
+
+@route_path_general.route('/v1.0/getuser/<string:user_id>', methods=['GET'])
+def get_user(user_id):
+    try:
+        user_id = ObjectId(user_id)
+        user = users.objects(_id=user_id)
+        #print(user)
+        return response_with(resp.SUCCESS_200, value={"user": user.to_json()})
+    except Exception:
+        return response_with(resp.INVALID_INPUT_422)
+
 
 
 @route_path_general.route('/v1.0/authors', methods=['POST'])
