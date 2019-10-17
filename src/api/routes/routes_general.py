@@ -8,6 +8,9 @@ from api.utils import responses as resp
 from api.models.model_author import Author, AuthorSchema
 from api.models.user import users
 from api.models.preferences import preferences
+import joblib
+import pandas as pd
+import numpy as np
 import pymongo
 from bson.objectid import ObjectId
 route_path_general = Blueprint("route_path_general", __name__)
@@ -38,12 +41,18 @@ def create_user():
 
 @route_path_general.route('/v1.0/getpreferences/<string:user_id>', methods=['GET'])
 def get_preferences(user_id):
+    print(__getPrediction()) #testing if predictions from pickle file runs
     try:
         user_id = ObjectId(user_id)
         user = preferences.objects(_id=user_id)
         return response_with(resp.SUCCESS_200, value={"preferences": user.to_json()})
     except Exception:
         return response_with(resp.INVALID_INPUT_422)
+
+def __getPrediction():
+    svdpp = joblib.load('svdpp_las_vegas_existing_user_model.pkl'); #need to put ENTIRE filepath here (e.g. /Users/name/.../src/svdpp_las_vegas_existing_user_model.pkl)
+    predictions_svdpp = svdpp.predict('3nDUQBjKyVor5wV0reJChg', '6fPQJq4f_yiq1NHn0fd11Q')
+    return predictions_svdpp
 
 @route_path_general.route('/v1.0/authors', methods=['POST'])
 def create_author():
