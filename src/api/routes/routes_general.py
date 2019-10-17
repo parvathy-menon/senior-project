@@ -7,7 +7,6 @@ from api.utils.responses import response_with
 from api.utils import responses as resp
 from api.models.model_author import Author, AuthorSchema
 from api.models.user import users
-import mongoengine
 import pymongo
 from bson.objectid import ObjectId
 route_path_general = Blueprint("route_path_general", __name__)
@@ -17,7 +16,21 @@ def get_user(user_id):
     try:
         user_id = ObjectId(user_id)
         user = users.objects(_id=user_id)
-        #print(user)
+        return response_with(resp.SUCCESS_200, value={"user": user.to_json()})
+    except Exception:
+        return response_with(resp.INVALID_INPUT_422)
+
+@route_path_general.route('/v1.0/createuser/', methods=['POST'])
+def create_user():
+    try:
+        password = request.form['password']
+        name = request.form['name']
+        #datetime = datetime.datetime.now()
+        user_id = ObjectId()
+        datetime = user_id.generation_time
+        newUser = users(password=password, name=name, _id=user_id, register_date=datetime)
+        newUser.save()
+        user = users.objects(_id=user_id)
         return response_with(resp.SUCCESS_200, value={"user": user.to_json()})
     except Exception:
         return response_with(resp.INVALID_INPUT_422)
