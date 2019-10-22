@@ -12,6 +12,7 @@ import joblib
 import pandas as pd
 import numpy as np
 import pymongo
+import json
 from bson.objectid import ObjectId
 route_path_general = Blueprint("route_path_general", __name__)
 
@@ -29,7 +30,6 @@ def create_user():
     try:
         password = request.form['password']
         name = request.form['name']
-        #datetime = datetime.datetime.now()
         user_id = ObjectId()
         datetime = user_id.generation_time
         newUser = users(password=password, name=name, _id=user_id, register_date=datetime)
@@ -41,7 +41,8 @@ def create_user():
 
 @route_path_general.route('/v1.0/getpreferences/<string:user_id>', methods=['GET'])
 def get_preferences(user_id):
-    print(__getPrediction()) #testing if predictions from pickle file runs
+    #print(__getPrediction()) #testing if predictions from pickle file runs
+    #print(__grabBusinessIDs('3nDUQBjKyVor5wV0reJChg'))
     try:
         user_id = ObjectId(user_id)
         user = preferences.objects(_id=user_id)
@@ -49,10 +50,33 @@ def get_preferences(user_id):
     except Exception:
         return response_with(resp.INVALID_INPUT_422)
 
+@route_path_general.route('/v1.0/generaterecommendations/<string:user_id>', methods=['GET'])
+def generate_recommendations(user_id):
+    try:
+        svdpp = joblib.load('src/svdpp_las_vegas_existing_user_model.pkl'); #need to put ENTIRE filepath here (e.g. /Users/name/.../src/svdpp_las_vegas_existing_user_model.pkl)
+        us_restaurant_review_lasvegas_nv = pd.read_csv("src/us_restaurant_review_lasvegas_nv.csv") #need to put ENTIRE filepath here (e.g. /Users/name/.../src/us_restaurant_review_lasvegas_nv.csv)
+        business_ids = us_restaurant_review_lasvegas_nv['business_id'].unique()
+        business_ids_rated_by_user = us_restaurant_review_lasvegas_nv.loc[us_restaurant_review_lasvegas_nv['user_id'] == user_id, 'business_id']
+        business_ids_to_predict = np.setdiff1d(business_ids, business_ids_rated_by_user)
+        testset = [[user_id, business_id, 4.] for business_id in business_ids_to_predict]
+        predictions_testset = svdpp.test(testset)
+        predicted_ratings = np.array([pred.est for pred in predictions_testset])
+        index_max_pred_rating = np.argpartition(predicted_ratings,-30)[-30:]
+        business_id_recommended = business_ids_to_predict[index_max_pred_rating]
+        business_id_recommended_two = business_id_recommended.tolist()
+        business_id_json = json.dumps([{'business_id': x} for x in business_id_recommended_two])
+        return response_with(resp.SUCCESS_200, value={"businesses": business_id_json})
+    except Exception:
+        return response_with(resp.INVALID_INPUT_422)
+
+
+
 def __getPrediction():
-    svdpp = joblib.load('svdpp_las_vegas_existing_user_model.pkl'); #need to put ENTIRE filepath here (e.g. /Users/name/.../src/svdpp_las_vegas_existing_user_model.pkl)
+    svdpp = joblib.load('src/svdpp_las_vegas_existing_user_model.pkl'); #need to put ENTIRE filepath here (e.g. /Users/name/.../src/svdpp_las_vegas_existing_user_model.pkl)
     predictions_svdpp = svdpp.predict('3nDUQBjKyVor5wV0reJChg', '6fPQJq4f_yiq1NHn0fd11Q')
     return predictions_svdpp
+
+
 
 @route_path_general.route('/v1.0/authors', methods=['POST'])
 def create_author():
