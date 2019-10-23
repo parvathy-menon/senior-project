@@ -64,8 +64,7 @@ def generate_recommendations(user_id):
         index_max_pred_rating = np.argpartition(predicted_ratings,-30)[-30:]
         business_id_recommended = business_ids_to_predict[index_max_pred_rating]
         business_id_recommended_two = business_id_recommended.tolist()
-        business_id_json = json.dumps([{'business_id': x} for x in business_id_recommended_two])
-        return response_with(resp.SUCCESS_200, value={"businesses": business_id_json})
+        return response_with(resp.SUCCESS_200, value={"businesses": business_id_recommended_two})
     except Exception:
         return response_with(resp.INVALID_INPUT_422)
 
