@@ -23,3 +23,4 @@ const PreferenceSchema = new Schema({
 });
 
 module.exports = Preference = mongoose.model('preference', PreferenceSchema);
+

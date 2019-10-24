@@ -28,6 +28,7 @@ app.use('/api/preferences', require('./routes/api/preferences'));
 
 const port = process.env.PORT || 6000;
 
+
 app.listen(port, () => console.log(`Server started on the port ${port}`));
 
 // see below vedio for deployment
