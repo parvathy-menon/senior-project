@@ -34,6 +34,8 @@ class NavBar extends Component {
                 <Menu.Item>
                     <span className='navbar-text mr-3'>
                         <strong>{user ? `Welcome ${user.name}` : ''}</strong>
+                        {/* jun, use below code to get user id in the redux store */}
+                        {/* <strong>{user ? `Welcome ${user._id}` : ''}</strong> */}
                     </span>
                 </Menu.Item>
                 <Menu.Item>

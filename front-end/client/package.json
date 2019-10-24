@@ -43,7 +43,7 @@
     "eject": "react-scripts eject",
     "deploy": "npm run build && firebase deploy"
   },
-  "proxy": "http://localhost:5000",
+  "proxy": "http://localhost:6000",
   "eslintConfig": {
     "extends": "react-app"
   },

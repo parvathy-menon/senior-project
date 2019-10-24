@@ -1,5 +1,5 @@
 const express = require('express');
-const mongoose =require('mongoose');
+const mongoose = require('mongoose');
 const config = require('config');
 
 const app = express();
@@ -23,9 +23,11 @@ mongoose
 app.use('/api/items', require('./routes/api/items'));
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/auth', require('./routes/api/auth'));
+//jun
+app.use('/api/preferences', require('./routes/api/preferences'));
 
-const port = process.env.PORT || 5000;
-    
+const port = process.env.PORT || 6000;
+
 app.listen(port, () => console.log(`Server started on the port ${port}`));
 
 // see below vedio for deployment

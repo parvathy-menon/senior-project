@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import { Grid } from 'semantic-ui-react';
-import ItemList from '../ItemList/ItemList';
+import { Grid, Container } from 'semantic-ui-react';
+import BusinessList from '../ExistingUser/BusinessList';
 import SideMenu from '../../SideMenu/SideMenu';
 import axios from 'axios';
 
-const locationSearched = 'Las Vegas';
+const locationSearched = 'las vegas';
 
-class ItemDashboard extends Component {
+class ExistingUser extends Component {
     state = {
         // items: itemsFromDashboard,
         restaurants: []
@@ -34,16 +34,19 @@ class ItemDashboard extends Component {
     render() {
         const { restaurants } = this.state;
         return (
-            <Grid>
-                <Grid.Column width={2}>
-                    <SideMenu />
-                </Grid.Column>
-                <Grid.Column width={14}>
-                    <ItemList items={restaurants} />
-                </Grid.Column>
-            </Grid>
+            <Container className='main'>
+                <Grid>
+                    <Grid.Column width={2}>
+                        <SideMenu />
+                    </Grid.Column>
+                    <Grid.Column width={14}>
+                        <BusinessList items={restaurants} />
+                    </Grid.Column>
+                </Grid>
+            </Container>
+
         )
     }
 }
 
-export default ItemDashboard;
+export default ExistingUser;
