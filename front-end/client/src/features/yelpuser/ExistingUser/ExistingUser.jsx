@@ -4,8 +4,6 @@ import BusinessList from '../ExistingUser/BusinessList';
 import SideMenu from '../../SideMenu/SideMenu';
 import axios from 'axios';
 
-const locationSearched = 'las vegas';
-
 const users = [
     { key: '1', text: '3nDUQBjKyVor5wV0reJChg', value: '3nDUQBjKyVor5wV0reJChg' },
     { key: '2', text: '3nDUQBjKyVor5wV0reJChg', value: '3nDUQBjKyVor5wV0reJChg' }
@@ -13,91 +11,66 @@ const users = [
 
 class ExistingUser extends Component {
     state = {
+        rIDs: [],
         restaurants: [],
         userID: '',
-        testingObj: {
-            "businesses": [
-                "RwMLuOkImBIqqYj4SSKSPg",
-                "8GOle3PqqZnni4U-vXBKQA",
-                "AMTNJbYbu0OMMAkx4meQxw",
-                "YTCCJ3ShO-zg0dlx1nk6dw",
-                "OETh78qcgDltvHULowwhJg",
-                "LpGCzgAKNSpzDNEUMVVtZA"
-            ],
-            "code": "success"
-        }
     }
 
-    // !!!!!!!!!! not done
+    getFive = event => {
+        if (this.state.rIDs[0] !== undefined) {
+            // need a loop to 'put' each object into restrant array
+            var restaurantsArr = [];
+            var yelpAPI;
+            var count = this.state.restaurants.length;
+
+            // works, but too many requests at the same time make yelp API deny
+            for (let i = count; i < count + 5; i++) {
+
+                yelpAPI = `${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/` + this.state.rIDs[i];
+
+                restaurantsArr.push(
+                    axios.get(yelpAPI, {
+                        headers: {
+                            Authorization: `Bearer ${process.env.REACT_APP_API_KEY}`
+                        }
+                    }).then(
+                        result => new Promise(resolve => {
+                            resolve(result.data)
+                        })
+                    ).catch((err) => {
+                        console.log('error')
+                    })
+                );
+            }
+
+            Promise.all(restaurantsArr).then(res => {
+                var tempArr = this.state.restaurants;
+                var newRestArr = tempArr.concat(res);
+                this.setState({
+                    restaurants: newRestArr
+                })
+            });
+        }
+
+    }
+
     handleSubmit = event => {
         event.preventDefault();
-
         var userID = this.state.userID;
-
         var api = 'http://0.0.0.0:5000/api/v1.0/generaterecommendations/' + userID;
 
-        console.log('I was here, called API: ' + api);
         axios
-            .post(api)
+            .get(api)
             .then(res => {
                 // console.log(res);
-                console.log(res.data);
+                // console.log(res.data);
+                this.setState({
+                    rIDs: res.data.businesses
+                })
             })
             .catch(err => {
                 console.log(err.data);
             });
-
-        // need a loop to 'put' each object into restrant array
-        var restaurantsArr = [];
-        var yelpAPI;
-
-        console.log('@@@@@@ yelpAPI here: ' + yelpAPI);
-
-
-        for (let i = 0; i < this.state.testingObj.businesses.length; i++) {
-
-            yelpAPI = `${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/` + this.state.testingObj.businesses[i];
-
-            restaurantsArr.push(
-                axios.get(yelpAPI, {
-                    headers: {
-                        Authorization: `Bearer ${process.env.REACT_APP_API_KEY}`
-                    }
-                }).then(
-                    result => new Promise(resolve => {
-                        setTimeout(() => {
-                            resolve(result.data)
-                        }, 2000)
-                    })
-                ).catch((err) => {
-                    console.log('error')
-                })
-            );
-
-        }
-
-        Promise.all(restaurantsArr).then(res => {
-            console.log('testing-------------')
-            console.log(res)
-        });
-
-        axios.get(yelpAPI, {
-            headers: {
-                Authorization: `Bearer ${process.env.REACT_APP_API_KEY}`
-            }
-        })
-            .then((res) => {
-                console.log(res)
-                //testing
-                // restaurantsArr.put(res.data);
-                this.setState({ restaurants: restaurantsArr })
-                //fail
-                console.log('restaurantsArr:  ??????' + restaurantsArr);
-            })
-            .catch((err) => {
-                console.log('error')
-            })
-        // this.state.restaurants.push();
     }
 
     onChangeUser = (e, data) => {
@@ -105,28 +78,6 @@ class ExistingUser extends Component {
         this.setState({
             userID: data.value
         });
-    }
-
-    componentDidMount() {
-        // console.log('~~~~~~ Print the restraunants in json :' + this.state.testingObj.businesses[0]);
-
-
-        // axios.get(`${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/search?location=${locationSearched}`, {
-        //     headers: {
-        //         Authorization: `Bearer ${process.env.REACT_APP_API_KEY}`
-        //     },
-        //     params: {
-        //         categories: 'breakfast_brunch',
-        //     }
-        // })
-        //     .then((res) => {
-        //         console.log(res)
-        //         this.setState({ restaurants: res.data.businesses })
-        //         console.log(res.data.businesses);
-        //     })
-        //     .catch((err) => {
-        //         console.log('error')
-        //     })
     }
 
     render() {
@@ -152,9 +103,13 @@ class ExistingUser extends Component {
                             onChange={this.onChangeUser}
                         />
                         <p></p>
-                        <Button onClick={this.handleSubmit} postive content='Submit' />
+                        <Button onClick={this.handleSubmit} color="teal" postive content='Submit' />
                         <Divider />
                         <BusinessList items={restaurants} />
+                        <p></p>
+                        {/* {this.state.rIDs === [] ? <Button onClick={this.getFive} postive content='Get 5 restaurants' /> : ''} */}
+                        <Button color="teal" onClick={this.getFive} postive content='Get 5 recommended restaurants' />
+
                     </Grid.Column>
                 </Grid>
             </Container>
