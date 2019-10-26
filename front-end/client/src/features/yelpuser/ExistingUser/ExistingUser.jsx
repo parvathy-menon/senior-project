@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Container, Dropdown, Header, Divider, Button } from 'semantic-ui-react';
+import { Grid, Container, Dropdown, Header, Divider, Button, Icon } from 'semantic-ui-react';
 import BusinessList from '../ExistingUser/BusinessList';
 import SideMenu from '../../SideMenu/SideMenu';
 import axios from 'axios';
@@ -15,6 +15,7 @@ class ExistingUser extends Component {
         rIDs: [],
         restaurants: [],
         userID: '',
+        isLoading: false
     }
 
     getFive = event => {
@@ -36,6 +37,9 @@ class ExistingUser extends Component {
                         }
                     }).then(
                         result => new Promise(resolve => {
+                            this.setState({
+                                isLoading: true
+                            })
                             resolve(result.data)
                         })
                     ).catch((err) => {
@@ -48,30 +52,38 @@ class ExistingUser extends Component {
                 var tempArr = this.state.restaurants;
                 var newRestArr = tempArr.concat(res);
                 this.setState({
-                    restaurants: newRestArr
+                    restaurants: newRestArr,
+                    isLoading: false
                 })
             });
         }
 
     }
 
+    // get recommended restaurants ids from backend
     handleSubmit = event => {
-        event.preventDefault();
-        var userID = this.state.userID;
-        var api = 'http://0.0.0.0:5000/api/v1.0/generaterecommendations/' + userID;
-
-        axios
-            .get(api)
-            .then(res => {
-                // console.log(res);
-                // console.log(res.data);
-                this.setState({
-                    rIDs: res.data.businesses
-                })
+        if (this.state.userID !== '') {
+            event.preventDefault();
+            var userID = this.state.userID;
+            var api = 'http://0.0.0.0:5000/api/v1.0/generaterecommendations/' + userID;
+            this.setState({
+                isLoading: true
             })
-            .catch(err => {
-                console.log(err.data);
-            });
+
+            axios
+                .get(api)
+                .then(res => {
+                    // console.log(res);
+                    console.log(res.data);
+                    this.setState({
+                        rIDs: res.data.businesses,
+                        isLoading: false
+                    })
+                })
+                .catch(err => {
+                    console.log(err.data);
+                });
+        }
     }
 
     onChangeUser = (e, data) => {
@@ -105,6 +117,7 @@ class ExistingUser extends Component {
                         />
                         <p></p>
                         <Button onClick={this.handleSubmit} color="teal" postive content='Submit' />
+                        {this.state.isLoading ? <Icon name='spinner'>Loading...</Icon> : ''}
                         <Divider />
                         <BusinessList items={restaurants} />
                         <p></p>
