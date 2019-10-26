@@ -121,8 +121,11 @@ class ExistingUser extends Component {
                         <Divider />
                         <BusinessList items={restaurants} />
                         <p></p>
-                        {/* {this.state.rIDs === [] ? <Button onClick={this.getFive} postive content='Get 5 restaurants' /> : ''} */}
-                        <Button color="teal" onClick={this.getFive} postive content='Get 5 recommended restaurants' />
+                        {this.state.restaurants.length < 30 ?
+                            <Button color="teal" onClick={this.getFive} postive content='Get 5 recommended restaurants' />
+                            :
+                            <p>Only showing 30 recommended restaurants.</p>}
+
 
                     </Grid.Column>
                 </Grid>
