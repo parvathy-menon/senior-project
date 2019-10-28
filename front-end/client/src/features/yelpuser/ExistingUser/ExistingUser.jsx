@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { Grid, Container, Dropdown, Header, Divider, Button, Icon } from 'semantic-ui-react';
-import BusinessList from '../ExistingUser/BusinessList';
 import SideMenu from '../../SideMenu/SideMenu';
+// import ItemList from '../item/ItemList/ItemList';
+import ItemList from '../../item/ItemList/ItemList';
 import axios from 'axios';
 
 // jun, need to find the way get more user id
@@ -119,7 +120,7 @@ class ExistingUser extends Component {
                         <Button onClick={this.handleSubmit} color="teal" postive content='Submit' />
                         {this.state.isLoading ? <Icon name='spinner'>Loading...</Icon> : ''}
                         <Divider />
-                        <BusinessList items={restaurants} />
+                        <ItemList items={restaurants} />
                         <p></p>
                         {this.state.restaurants.length < 30 ?
                             <Button color="teal" onClick={this.getFive} postive content='Get 5 recommended restaurants' />

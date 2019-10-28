@@ -14,10 +14,10 @@ class ProfileDashboard extends Component {
                     <Grid.Column width={14}>
                         <Grid.Row>
                             <Grid >
-                                <Grid.Column width={3}>
+                                <Grid.Column width={2}>
                                     <Image src='https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' />
                                 </Grid.Column>
-                                <Grid.Column width={13}>
+                                <Grid.Column width={14}>
                                     <Preference />
                                 </Grid.Column>
                             </Grid>

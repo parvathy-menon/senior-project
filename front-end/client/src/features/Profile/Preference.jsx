@@ -1,27 +1,15 @@
 import React, { Component, Fragment } from 'react';
-import { Dropdown, Segment, Header, Divider, Button } from 'semantic-ui-react';
+import { Dropdown, Segment, Header, Divider, Button, Icon } from 'semantic-ui-react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import ItemList from '../item/ItemList/ItemList';
 var jwt = require('jsonwebtoken');
 
 // const cities = [
 //     { key: 'sjca', text: 'San Jose', value: 'sjca' },
 //     { key: 'sfca', text: 'San Francisco', value: 'sfca' },
 //     { key: 'fmca', text: 'Fremont', value: 'fmca' },
-// ]
-// const priceRanges = [
-//     { key: '1', text: '$', value: '$' },
-//     { key: '2', text: '$$', value: '$$' },
-//     { key: '3', text: '$$$', value: '$$$' },
-//     { key: '4', text: '$$$$', value: '$$$$' },
-//     { key: '5', text: '$$$$$', value: '$$$$$' }
-// ]
-// const categories = [
-//     { key: '1', text: 'American', value: 'ame' },
-//     { key: '2', text: 'Spanish', value: 'spa' },
-//     { key: '3', text: 'Chinese', value: 'chi' },
-//     { key: '4', text: 'Philippine', value: 'phi' }
 // ]
 
 const american = [
@@ -65,13 +53,54 @@ class Preference extends Component {
         this.state = {
             // city: '',
             // selectedCity: null,
-            // priceRange: '',
-            // selectedPriceRange: null,
-            // category: '',
-            // selectedCategory: null
-            userID: userID
+            userID: userID,
+            restaurants: [],
+            isLoading: false
         }
     }
+
+    // not done, waiting for backend
+    // getFive = event => {
+    //     if (this.state.rIDs[0] !== undefined) {
+    //         // need a loop to 'put' each object into restrant array
+    //         var restaurantsArr = [];
+    //         var yelpAPI;
+    //         var count = this.state.restaurants.length;
+
+    //         // works, but too many requests at the same time make yelp API deny
+    //         for (let i = count; i < count + 5; i++) {
+
+    //             yelpAPI = `${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/` + this.state.rIDs[i];
+
+    //             restaurantsArr.push(
+    //                 axios.get(yelpAPI, {
+    //                     headers: {
+    //                         Authorization: `Bearer ${process.env.REACT_APP_API_KEY}`
+    //                     }
+    //                 }).then(
+    //                     result => new Promise(resolve => {
+    //                         this.setState({
+    //                             isLoading: true
+    //                         })
+    //                         resolve(result.data)
+    //                     })
+    //                 ).catch((err) => {
+    //                     console.log('error')
+    //                 })
+    //             );
+    //         }
+
+    //         Promise.all(restaurantsArr).then(res => {
+    //             var tempArr = this.state.restaurants;
+    //             var newRestArr = tempArr.concat(res);
+    //             this.setState({
+    //                 restaurants: newRestArr,
+    //                 isLoading: false
+    //             })
+    //         });
+    //     }
+
+    // }
 
     componentDidMount() {
         // below code will crash the app when refresh this page, becareful
@@ -140,22 +169,6 @@ class Preference extends Component {
     //     });
     // }
 
-    // onChangePriceRange = (e, data) => {
-    //     console.log(data.value);
-    //     this.setState({
-    //         selectedPriceRange: data.value,
-    //         priceRange: data.value
-    //     });
-    // }
-
-    // onChangeCategory = (e, data) => {
-    //     console.log(data.value);
-    //     this.setState({
-    //         selectedCategory: data.value,
-    //         category: data.value
-    //     });
-    // }
-
     onChangeAmerican = (e, data) => {
         // console.log('data.value ' + data.value);
         this.setState({
@@ -206,35 +219,6 @@ class Preference extends Component {
                         onChange={this.onChangeCity}
                     />
                     <Divider /> */}
-                    {/* <Header>Price Range:</Header>
-                    <Dropdown
-                        button
-                        className='icon'
-                        fluid
-                        labeled
-                        icon='dollar sign'
-                        options={priceRanges}
-                        search
-                        text={priceRange}
-                        priceRange={priceRange}
-                        value={selectedPriceRange}
-                        onChange={this.onChangePriceRange}
-                    />
-                    <Divider /> */}
-                    {/* <Header>Category:</Header>
-                    <Dropdown
-                        button
-                        className='icon'
-                        fluid
-                        labeled
-                        icon='coffee'
-                        options={categories}
-                        search
-                        text={category}
-                        category={category}
-                        value={selectedCategory}
-                        onChange={this.onChangeCategory}
-                    /> */}
 
                     {/* works */}
                     {/* <div>`${user._id}`</div> */}
@@ -298,9 +282,15 @@ class Preference extends Component {
                     <p></p>
                     <Button onClick={this.handleSubmit} postive content='Submit' />
                 </Segment>
+                <p>
+                    {this.state.restaurants.length < 30 ?
+                        <Button color="teal" onClick={this.getFive} postive content='Get 5 recommended restaurants' />
+                        :
+                        <p>Only showing 30 recommended restaurants.</p>}
+                </p>
+                {this.state.isLoading ? <Icon name='spinner'>Loading...</Icon> : ''}
+                <ItemList items={this.state.restaurants} />
             </Fragment>
-
-
         );
     }
 }
