@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { Grid, Container, Dropdown, Header, Divider, Button, Icon } from 'semantic-ui-react';
-// import SideMenu from '../../SideMenu/SideMenu';
-import ItemList from '../../item/ItemList/ItemList';
-import GMap from '../../map/GMap';
+import ItemList from '../features/item/ItemList/ItemList';
+import GMap from '../features/map/GMap';
 import axios from 'axios';
 
 // jun, need to find the way get more user id
@@ -11,7 +10,7 @@ const users = [
     { key: '2', text: '3nDUQBjKyVor5wV0reJChg', value: '3nDUQBjKyVor5wV0reJChg' }
 ]
 
-class ExistingUser extends Component {
+class Test extends Component {
     state = {
         rIDs: [],
         restaurants: [],
@@ -126,7 +125,7 @@ class ExistingUser extends Component {
 
 
                     </Grid.Column>
-                    <Grid.Column width={4}>
+                    <Grid.Column width={6}>
                         <GMap />
                     </Grid.Column>
                 </Grid>
@@ -136,4 +135,4 @@ class ExistingUser extends Component {
     }
 }
 
-export default ExistingUser;
+export default Test;

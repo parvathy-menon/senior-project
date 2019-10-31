@@ -3,7 +3,6 @@ import { Menu, Container } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import Register from '../../../components/auth/Register';
 import Logout from '../../..//components/auth/Logout';
-import Login from '../../../components/auth/LoginModal';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import LoginModal from '../../../components/auth/LoginModal';
