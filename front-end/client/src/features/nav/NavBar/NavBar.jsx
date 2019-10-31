@@ -65,8 +65,13 @@ class NavBar extends Component {
                         </Link>
                     </Menu.Item>
                     <Menu.Item>
-                        <Link to="/itemdashboard">
-                            Items
+                        <Link to="/profile">
+                            Profile
+                        </Link>
+                    </Menu.Item>
+                    <Menu.Item>
+                        <Link to="/existinguser">
+                            Existing User
                         </Link>
                     </Menu.Item>
                     <Menu.Item position="right">
