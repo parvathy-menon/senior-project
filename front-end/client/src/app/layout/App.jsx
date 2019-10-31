@@ -22,7 +22,6 @@ class App extends Component {
             <Route exact path='/' component={HomePage} />
             <Route exact path='/testing' component={Testing} />
             <Route exact path='/home' component={HomePage} />
-            <Route exact path='/ItemDashboard' component={HomePage} />
             <Route exact path='/profile' component={ProfileDashboard} />
             <Route exact path='/existinguser' component={ExistingUser} />
             <Route path='*' component={() => "404 NOT FOUND"} />

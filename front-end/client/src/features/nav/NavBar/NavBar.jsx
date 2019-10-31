@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react'
-import { Menu, Container, Button } from 'semantic-ui-react';
+import { Menu, Container } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import Register from '../../../components/auth/Register';
 import Logout from '../../..//components/auth/Logout';
@@ -61,7 +61,7 @@ class NavBar extends Component {
                     <Menu.Item header>
                         <img src="assets/logo.png" alt="logo" />
                         <Link to="/">
-                            Yelp Recommnender
+                            Yelp Recommender
                         </Link>
                     </Menu.Item>
                     <Menu.Item>
