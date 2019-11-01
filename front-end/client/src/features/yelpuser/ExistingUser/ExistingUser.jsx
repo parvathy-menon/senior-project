@@ -16,7 +16,11 @@ class ExistingUser extends Component {
         rIDs: [],
         restaurants: [],
         userID: '',
-        isLoading: false
+        isLoading: false,
+        currentLocation: {
+            lat: 47.444,
+            lng: -122.176
+        }
     }
 
     getFive = event => {
@@ -54,8 +58,14 @@ class ExistingUser extends Component {
                 var newRestArr = tempArr.concat(res);
                 this.setState({
                     restaurants: newRestArr,
-                    isLoading: false
+                    isLoading: false,
+                    //Seattle
+                    currentLocation: {
+                        lat: newRestArr[0].coordinates.latitude,
+                        lng: newRestArr[0].coordinates.longitude
+                    }
                 })
+                // console.log(newRestArr);
             });
         }
 
@@ -126,8 +136,8 @@ class ExistingUser extends Component {
 
 
                     </Grid.Column>
-                    <Grid.Column width={4}>
-                        <GMap />
+                    <Grid.Column width={6}>
+                        <GMap items={this.state.restaurants} currentLocation={this.state.currentLocation} />
                     </Grid.Column>
                 </Grid>
             </Container>
