@@ -65,7 +65,7 @@ class ExistingUser extends Component {
                         lng: newRestArr[0].coordinates.longitude
                     }
                 })
-                // console.log(newRestArr);
+                console.log(newRestArr);
             });
         }
 

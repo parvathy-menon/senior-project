@@ -7,10 +7,10 @@ class ItemListItem extends Component {
         return (
             <Grid called>
                 <Grid.Row>
-                    <Grid.Column width={3}>
-                        <Image src={item.image_url} href={item.url} size='small' rounded />
+                    <Grid.Column width={4}>
+                        <Image src={item.image_url} href={item.url} target="_blank" size='medium' rounded />
                     </Grid.Column>
-                    <Grid.Column width={13}>
+                    <Grid.Column width={12}>
                         <Segment.Group>
                             <Segment>
                                 <Item.Group>
@@ -18,11 +18,11 @@ class ItemListItem extends Component {
                                     <Item.Content>
                                         <Item.Header as='a' href={item.url} target="_blank"><h3>{item.name}</h3></Item.Header>
                                         <Rating icon='star' defaultRating={item.rating} maxRating={5} disabled />
-                                        <Item.Meta>{item.price}</Item.Meta>
+                                        <Item.Meta>Price: {item.price}</Item.Meta>
                                         <Item.Description>
                                             Category:
                                             {item.categories.map(category => (
-                                                category.title
+                                                category.title + ' | '
                                             ))}
                                         </Item.Description>
                                     </Item.Content>
@@ -31,9 +31,9 @@ class ItemListItem extends Component {
                             <Segment>
                                 <span>
                                     <Icon name='phone' />
-                                    {item.phone}
+                                    {item.display_phone}
                                     <Icon name='map marker alternate' />
-                                    {item.location.display_address}
+                                    {item.location.address1}, {item.location.city}, {item.location.state} {item.location.zip_code}
                                 </span>
                             </Segment>
                         </Segment.Group>
