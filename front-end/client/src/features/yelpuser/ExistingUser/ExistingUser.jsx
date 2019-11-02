@@ -7,7 +7,7 @@ import axios from 'axios';
 
 // jun, need to find the way get more user id
 const users = [
-    { key: '1', text: '3nDUQBjKyVor5wV0reJChg', value: '3nDUQBjKyVor5wV0reJChg' },
+    { key: '1', text: 'Jacky Chen', value: '3nDUQBjKyVor5wV0reJChg' },
     { key: '2', text: '3nDUQBjKyVor5wV0reJChg', value: '3nDUQBjKyVor5wV0reJChg' }
 ]
 
@@ -133,8 +133,6 @@ class ExistingUser extends Component {
                             <Button color="teal" onClick={this.getFive} postive content='Get 5 recommended restaurants' />
                             :
                             <p>Only showing 30 recommended restaurants.</p>}
-
-
                     </Grid.Column>
                     <Grid.Column width={6}>
                         <GMap items={this.state.restaurants} currentLocation={this.state.currentLocation} />

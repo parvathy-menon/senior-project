@@ -1,9 +1,10 @@
 import React, { Component, Fragment } from 'react';
-import { Dropdown, Segment, Header, Divider, Button, Icon } from 'semantic-ui-react';
+import { Dropdown, Segment, Header, Divider, Button, Icon, Grid } from 'semantic-ui-react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ItemList from '../item/ItemList/ItemList';
+import GMap from '../map/GMap';
 var jwt = require('jsonwebtoken');
 
 // const cities = [
@@ -55,7 +56,11 @@ class Preference extends Component {
             // selectedCity: null,
             userID: userID,
             restaurants: [],
-            isLoading: false
+            isLoading: false,
+            currentLocation: {
+                lat: 47.444,
+                lng: -122.176
+            }
         }
     }
 
@@ -90,14 +95,20 @@ class Preference extends Component {
     //             );
     //         }
 
-    //         Promise.all(restaurantsArr).then(res => {
-    //             var tempArr = this.state.restaurants;
-    //             var newRestArr = tempArr.concat(res);
-    //             this.setState({
-    //                 restaurants: newRestArr,
-    //                 isLoading: false
-    //             })
-    //         });
+    // Promise.all(restaurantsArr).then(res => {
+    //     var tempArr = this.state.restaurants;
+    //     var newRestArr = tempArr.concat(res);
+    //     this.setState({
+    //         restaurants: newRestArr,
+    //         isLoading: false,
+    //         //Seattle
+    //         currentLocation: {
+    //             lat: newRestArr[0].coordinates.latitude,
+    //             lng: newRestArr[0].coordinates.longitude
+    //         }
+    //     })
+    //     // console.log(newRestArr);
+    // });
     //     }
 
     // }
@@ -282,14 +293,25 @@ class Preference extends Component {
                     <p></p>
                     <Button onClick={this.handleSubmit} postive content='Submit' />
                 </Segment>
-                <p>
-                    {this.state.restaurants.length < 30 ?
-                        <Button color="teal" onClick={this.getFive} postive content='Get 5 recommended restaurants' />
-                        :
-                        <p>Only showing 30 recommended restaurants.</p>}
-                </p>
+                <Grid >
+                    <Grid.Column width={11}>
+                        <ItemList items={this.state.restaurants} />
+                        <p>
+                            {this.state.restaurants.length < 30 ?
+                                <Button color="teal" onClick={this.getFive} postive content='Get 5 recommended restaurants' />
+                                :
+                                <p>Only showing 30 recommended restaurants.</p>}
+                        </p>
+                    </Grid.Column>
+                    <Grid.Column width={5}>
+                        <GMap items={this.state.restaurants} currentLocation={this.state.currentLocation} />
+                    </Grid.Column>
+                </Grid>
+
+
+
                 {this.state.isLoading ? <Icon name='spinner'>Loading...</Icon> : ''}
-                <ItemList items={this.state.restaurants} />
+
             </Fragment>
         );
     }
