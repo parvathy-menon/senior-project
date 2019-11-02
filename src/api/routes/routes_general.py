@@ -14,7 +14,13 @@ import numpy as np
 import pymongo
 import json
 from bson.objectid import ObjectId
+from yelp.client import Client
+import requests
 route_path_general = Blueprint("route_path_general", __name__)
+
+API_KEY = "dn1j4olzNIiHc9SWJmYhRHLR1ytzLQrVc-B0P-kcPzECXQaisAknSQeq70Gnxj2DoLhWwfTnN1YNWDA89bRWbtogs_qvN_gpK8qvvZqPelpOWiUCUg6UZE0SkatsXXYx"
+API_HOST = 'https://api.yelp.com'
+BUSINESS_PATH = '/v3/businesses/'
 
 @route_path_general.route('/v1.0/getuser/<string:user_id>', methods=['GET'])
 def get_user(user_id):
@@ -52,19 +58,30 @@ def get_preferences(user_id):
 
 @route_path_general.route('/v1.0/generaterecommendations/<string:user_id>', methods=['GET'])
 def generate_recommendations(user_id):
+    #try:
+    svdpp = joblib.load('src/svdpp_las_vegas_existing_user_model.pkl') #need to put ENTIRE filepath here (e.g. /Users/name/.../src/svdpp_las_vegas_existing_user_model.pkl)
+    us_restaurant_review_lasvegas_nv = pd.read_csv("src/us_restaurant_review_lasvegas_nv.csv") #need to put ENTIRE filepath here (e.g. /Users/name/.../src/us_restaurant_review_lasvegas_nv.csv)
+    business_ids = us_restaurant_review_lasvegas_nv['business_id'].unique()
+    business_ids_rated_by_user = us_restaurant_review_lasvegas_nv.loc[us_restaurant_review_lasvegas_nv['user_id'] == user_id, 'business_id']
+    business_ids_to_predict = np.setdiff1d(business_ids, business_ids_rated_by_user)
+    testset = [[user_id, business_id, 4.] for business_id in business_ids_to_predict]
+    predictions_testset = svdpp.test(testset)
+    predicted_ratings = np.array([pred.est for pred in predictions_testset])
+    index_max_pred_rating = np.argpartition(predicted_ratings,-30)[-30:]
+    business_id_recommended = business_ids_to_predict[index_max_pred_rating]
+    business_id_recommended_two = business_id_recommended.tolist()
+    print(get_business(business_id_recommended_two[0]))
+    return response_with(resp.SUCCESS_200, value={"businesses": business_id_recommended_two})
+    #except Exception:
+        #return response_with(resp.INVALID_INPUT_422)
+
+@route_path_general.route('/v1.0/generateusers/', methods=['GET']) #generate ten random users
+def generate_users():
     try:
-        svdpp = joblib.load('src/svdpp_las_vegas_existing_user_model.pkl'); #need to put ENTIRE filepath here (e.g. /Users/name/.../src/svdpp_las_vegas_existing_user_model.pkl)
+        svdpp = joblib.load('src/svdpp_las_vegas_existing_user_model.pkl') #need to put ENTIRE filepath here (e.g. /Users/name/.../src/svdpp_las_vegas_existing_user_model.pkl)
         us_restaurant_review_lasvegas_nv = pd.read_csv("src/us_restaurant_review_lasvegas_nv.csv") #need to put ENTIRE filepath here (e.g. /Users/name/.../src/us_restaurant_review_lasvegas_nv.csv)
-        business_ids = us_restaurant_review_lasvegas_nv['business_id'].unique()
-        business_ids_rated_by_user = us_restaurant_review_lasvegas_nv.loc[us_restaurant_review_lasvegas_nv['user_id'] == user_id, 'business_id']
-        business_ids_to_predict = np.setdiff1d(business_ids, business_ids_rated_by_user)
-        testset = [[user_id, business_id, 4.] for business_id in business_ids_to_predict]
-        predictions_testset = svdpp.test(testset)
-        predicted_ratings = np.array([pred.est for pred in predictions_testset])
-        index_max_pred_rating = np.argpartition(predicted_ratings,-30)[-30:]
-        business_id_recommended = business_ids_to_predict[index_max_pred_rating]
-        business_id_recommended_two = business_id_recommended.tolist()
-        return response_with(resp.SUCCESS_200, value={"businesses": business_id_recommended_two})
+        user_ids = us_restaurant_review_lasvegas_nv['user_id'].unique().tolist()
+        return response_with(resp.SUCCESS_200, value={"users": user_ids[0:10]})
     except Exception:
         return response_with(resp.INVALID_INPUT_422)
 
@@ -74,6 +91,13 @@ def __getPrediction():
     svdpp = joblib.load('src/svdpp_las_vegas_existing_user_model.pkl'); #need to put ENTIRE filepath here (e.g. /Users/name/.../src/svdpp_las_vegas_existing_user_model.pkl)
     predictions_svdpp = svdpp.predict('3nDUQBjKyVor5wV0reJChg', '6fPQJq4f_yiq1NHn0fd11Q')
     return predictions_svdpp
+
+def get_business(business_id):
+    business_path = BUSINESS_PATH + business_id
+    url = API_HOST + business_path
+    headers = {'Authorization': f"Bearer {API_KEY}"}
+    response = requests.get(url, headers=headers)
+    return response.json()
 
 
 
