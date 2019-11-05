@@ -55,7 +55,7 @@ def get_preferences(user_id):
 
 @route_path_general.route('/v1.0/generaterecommendations/<string:user_id>', methods=['GET'])
 def generate_recommendations(user_id):
-    # try:
+    try:
         svdpp = joblib.load(Keys.PKL_DIR) #need to put ENTIRE filepath here (e.g. /Users/name/.../src/svdpp_las_vegas_existing_user_model.pkl)
         us_restaurant_review_lasvegas_nv = pd.read_csv(Keys.CSV_DIR) #need to put ENTIRE filepath here (e.g. /Users/name/.../src/us_restaurant_review_lasvegas_nv.csv)
         business_ids = us_restaurant_review_lasvegas_nv['business_id'].unique()
@@ -69,8 +69,8 @@ def generate_recommendations(user_id):
         business_id_recommended_two = business_id_recommended.tolist()
         print(get_business(business_id_recommended_two[0]))
         return response_with(resp.SUCCESS_200, value={"businesses": business_id_recommended_two})
-    # except Exception:
-    #     return response_with(resp.INVALID_INPUT_422)
+    except Exception:
+        return response_with(resp.INVALID_INPUT_422)
 
 @route_path_general.route('/v1.0/generateusers/', methods=['GET']) #generate ten random users
 def generate_users():
