@@ -3,8 +3,10 @@
 ## Yelp Dataset
 yelp_dataset/
 
-
-
+#cache
+/src/api/__pycache__
+/src/api/routes/__pycache__
+/src/api/utils/__pycache__
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
