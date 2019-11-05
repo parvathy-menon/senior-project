@@ -38,19 +38,15 @@ MONGO_URI = mongodb+srv://yunjunma:yunjunma@cluster0-jljac.mongodb.net/test?retr
 
 
 # Backend installation
-// put  
-// svdpp_las_vegas_existing_user_model.pkl
-// and
-// us_restaurant_review_lasvegas_nv.csv
-// In the backend root
 
-// src/api/utils/keys.py
-// update the file path for above files
+# path udpate
+1. put svdpp_las_vegas_existing_user_model.pkl and us_restaurant_review_lasvegas_nv.csv in the backend root
+2. in the src/api/utils/keys.py file, update the file path for above files
 
-// run below code in backend root directory
-pip install virtualenv
-virtualenv venv
-source venv/bin/activate
-pip install -r requirements.txt
-cd src
-python run.py
+# run below code in backend root directory to intall and run the backend
+1. pip install virtualenv
+2. virtualenv venv
+3. source venv/bin/activate
+4. pip install -r requirements.txt
+5. cd src
+6. python run.py
