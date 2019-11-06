@@ -5,18 +5,15 @@ import ItemList from '../../item/ItemList/ItemList';
 import GMap from '../../map/GMap';
 import axios from 'axios';
 
-// jun, need to find the way get more user id
-const users = [
-    { key: '1', text: 'Jacky Chen', value: '3nDUQBjKyVor5wV0reJChg' },
-    { key: '2', text: '3nDUQBjKyVor5wV0reJChg', value: '3nDUQBjKyVor5wV0reJChg' }
-]
-
 class ExistingUser extends Component {
     state = {
+        eIDs: [],
         rIDs: [],
         restaurants: [],
         userID: '',
         isLoading: false,
+        getFiveIsLoading: false,
+        get10ExistingUsersIsLoading: false,
         currentLocation: {
             lat: 47.444,
             lng: -122.176
@@ -56,6 +53,7 @@ class ExistingUser extends Component {
             Promise.all(restaurantsArr).then(res => {
                 var tempArr = this.state.restaurants;
                 var newRestArr = tempArr.concat(res);
+                console.log(newRestArr);
                 this.setState({
                     restaurants: newRestArr,
                     isLoading: false,
@@ -68,14 +66,90 @@ class ExistingUser extends Component {
                 console.log(newRestArr);
             });
         }
+    }
+
+    // under development
+    // this is a backup method when heroku service is down
+    // getFive = event => {
+    //     if (this.state.rIDs[0] !== undefined) {
+    //         // need a loop to 'put' each object into restrant array
+    //         var restaurantsArr = [];
+    //         var count = this.state.restaurants.length;
+
+    //         let userID = this.state.userID;
+
+    //         var api = 'http://0.0.0.0:5000/api/v1.0/generatebusinessdata/' + userID;
+    //         this.setState({
+    //             getFiveIsLoading: true
+    //         })
+    //         var tenUsers = [];
+
+    //         axios
+    //             .get(api)
+    //             .then(res => {
+    //                 // console.log(res.data.business_data);
+    //                 restaurantsArr = res.data.business_data;
+
+    //                 this.setState({
+    //                     eIDs: tenUsers,
+    //                     getFiveIsLoading: false,
+    //                     restaurants: restaurantsArr,
+    //                     isLoading: false,
+    //                     //Seattle
+    //                     currentLocation: {
+    //                         lat: restaurantsArr[0].coordinates.latitude,
+    //                         lng: restaurantsArr[0].coordinates.longitude
+    //                     }
+    //                 })
+
+    //             })
+    //             .catch(err => {
+    //                 console.log(err.data);
+    //             });
+    //     }
+    // }
+
+    // get ten random user ids from backend
+    getTenUsers = event => {
+
+        event.preventDefault();
+        this.setState({
+            eIDs: []
+        })
+        var api = 'http://0.0.0.0:5000/api/v1.0/generateusers/';
+        this.setState({
+            get10ExistingUsersIsLoading: true
+        })
+        var tenUsers = [];
+
+        axios
+            .get(api)
+            .then(res => {
+                // console.log(res);
+                console.log(res.data.users);
+                let i;
+                for (i = 0; i < res.data.users.length; i++) {
+                    tenUsers.push({ key: i + 1, text: 'Exsiting user ' + (i + 1), value: res.data.users[i] });
+                }
+                this.setState({
+                    eIDs: tenUsers,
+                    get10ExistingUsersIsLoading: false
+                })
+            })
+            .catch(err => {
+                console.log(err.data);
+            });
 
     }
 
     // get recommended restaurants ids from backend
     handleSubmit = event => {
+        this.setState({
+            restaurants: []
+        })
         if (this.state.userID !== '') {
             event.preventDefault();
-            var userID = this.state.userID;
+            let userID = this.state.userID;
             var api = 'http://0.0.0.0:5000/api/v1.0/generaterecommendations/' + userID;
             this.setState({
                 isLoading: true
@@ -110,6 +184,8 @@ class ExistingUser extends Component {
             <Container className='main'>
                 <Grid>
                     <Grid.Column width={10}>
+                        <Button color="teal" onClick={this.getTenUsers} postive content='Get 10 existing users from Yelp dataset' />
+                        {this.state.get10ExistingUsersIsLoading ? <Icon name='spinner'>Loading...</Icon> : ''}
                         <Header>Choose a existing user</Header>
                         <Dropdown
                             button
@@ -117,7 +193,7 @@ class ExistingUser extends Component {
                             fluid
                             labeled
                             icon='user outline'
-                            options={users}
+                            options={this.state.eIDs}
                             selection
                             placeholder='Pick an existing user ID'
                             valve={this.state.userID}
