@@ -19,6 +19,7 @@ import json
 import urllib
 import time
 import collections
+from sklearn.metrics import jaccard_similarity_score
 route_path_general = Blueprint("route_path_general", __name__)
 
 API_KEY = "dn1j4olzNIiHc9SWJmYhRHLR1ytzLQrVc-B0P-kcPzECXQaisAknSQeq70Gnxj2DoLhWwfTnN1YNWDA89bRWbtogs_qvN_gpK8qvvZqPelpOWiUCUg6UZE0SkatsXXYx"
@@ -79,6 +80,23 @@ def generate_business_data(user_id):
     try:
         business_id_recommended_two = get_recommendation_list(user_id)
         return response_with(resp.SUCCESS_200, value={"business_data": get_recommendation_json(business_id_recommended_two)})
+    except Exception:
+        return response_with(resp.INVALID_INPUT_422)
+
+@route_path_general.route('/v1.0/generatenewbusinessdata/newuser', methods= ['POST'])
+def generate_newuser_business_data():
+    try:
+        data = request.get_json()
+        likes_japanese = bool(data['likes_japanese'])
+        likes_mexican = bool(data['likes_mexican'])
+        likes_italian = bool(data['likes_italian'])
+        likes_american = bool(data['likes_american'])
+        likes_chinese = bool(data['likes_chinese'])
+        likes_thai = bool(data['likes_thai'])
+        likes_creperies = bool(data['likes_creperies'])
+        likes_french = bool(data['likes_french'])
+        j = get_recommendation_new_user(likes_japanese, likes_mexican, likes_italian, likes_american, likes_chinese, likes_thai, likes_creperies, likes_french)
+        return response_with(resp.SUCCESS_200, value={"business_data": j})
     except Exception:
         return response_with(resp.INVALID_INPUT_422)
 
@@ -200,7 +218,20 @@ def get_business_attributes(list_of_jsons): #given a list of json's, sanitize js
         if delete_invalid_json == False: #append json to list if all attributes are valid
             dictionary_updated = dict(dictionary_of_json)
             ls.append(dictionary_updated)
+    print(count)
+
     return ls
+
+def get_recommendation_new_user(likes_japanese, likes_mexican, likes_italian, likes_american, likes_chinese, likes_thai, likes_creperies, likes_french):
+    userfeatures = [likes_japanese, likes_mexican, likes_italian, likes_american, likes_chinese, likes_thai, likes_creperies, likes_french]
+    restaurant_features = pd.read_csv("src/restaurant_features.csv")
+    new_user_restaurant_jac_sim = pd.DataFrame( columns=['jac_sim','business_id'])
+    for index, row in restaurant_features.iterrows():
+        jac_sim = jaccard_similarity_score(userfeatures,[row['Japanese'], row['Mexican'],row['Italian'], row['American'],row['Chinese'], row['Thai'],row['Creperies'], row['French']])
+        new_user_restaurant_jac_sim = new_user_restaurant_jac_sim.append({'jac_sim':jac_sim,'business_id':row['business_id']}, ignore_index=True)
+    new_user_restaurant_jac_sim_asc = new_user_restaurant_jac_sim.sort_values(by=['jac_sim'], ascending=False)
+    new_user_restaurant_jac_sim_asc_top30 = new_user_restaurant_jac_sim_asc[:30]
+    return new_user_restaurant_jac_sim_asc_top30['business_id'].tolist()
 
 def isValid(json_object, property): #helper function to validate attributes in json
     if (json_object.get(property)) is not None:
