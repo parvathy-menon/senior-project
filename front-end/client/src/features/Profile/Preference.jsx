@@ -77,11 +77,13 @@ class Preference extends Component {
             // selectedCity: null,
             userID: userID,
             restaurants: [],
+            rIDs: [],
             isLoading: false,
             currentLocation: {
                 lat: 47.444,
                 lng: -122.176
             },
+            submitIsLoading: false,
             likes_mexican: false,
             likes_chinese: false,
             likes_american: false,
@@ -95,56 +97,56 @@ class Preference extends Component {
     }
 
     // not done, waiting for backend
-    // getFive = event => {
-    //     if (this.state.rIDs[0] !== undefined) {
-    //         // need a loop to 'put' each object into restrant array
-    //         var restaurantsArr = [];
-    //         var yelpAPI;
-    //         var count = this.state.restaurants.length;
+    getFive = event => {
+        if (this.state.rIDs[0] !== undefined) {
+            // need a loop to 'put' each object into restrant array
+            var restaurantsArr = [];
+            var yelpAPI;
+            var count = this.state.restaurants.length;
 
-    //         // works, but too many requests at the same time make yelp API deny
-    //         for (let i = count; i < count + 5; i++) {
+            // works, but too many requests at the same time make yelp API deny
+            for (let i = count; i < count + 5; i++) {
 
-    //             yelpAPI = `${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/` + this.state.rIDs[i];
+                yelpAPI = `${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/` + this.state.rIDs[i];
 
-    //             restaurantsArr.push(
-    //                 axios.get(yelpAPI, {
-    //                     headers: {
-    //                         Authorization: `Bearer ${process.env.REACT_APP_API_KEY}`
-    //                     }
-    //                 }).then(
-    //                     result => new Promise(resolve => {
-    //                         this.setState({
-    //                             isLoading: true
-    //                         })
-    //                         resolve(result.data)
-    //                     })
-    //                 ).catch((err) => {
-    //                     console.log('error')
-    //                 })
-    //             );
-    //         }
+                restaurantsArr.push(
+                    axios.get(yelpAPI, {
+                        headers: {
+                            Authorization: `Bearer ${process.env.REACT_APP_API_KEY}`
+                        }
+                    }).then(
+                        result => new Promise(resolve => {
+                            this.setState({
+                                isLoading: true
+                            })
+                            resolve(result.data)
+                        })
+                    ).catch((err) => {
+                        console.log('error')
+                    })
+                );
+            }
 
-    // Promise.all(restaurantsArr).then(res => {
-    //     var tempArr = this.state.restaurants;
-    //     var newRestArr = tempArr.concat(res);
-    //     this.setState({
-    //         restaurants: newRestArr,
-    //         isLoading: false,
-    //         //Seattle
-    //         currentLocation: {
-    //             lat: newRestArr[0].coordinates.latitude,
-    //             lng: newRestArr[0].coordinates.longitude
-    //         }
-    //     })
-    //     // console.log(newRestArr);
-    // });
-    //     }
+            Promise.all(restaurantsArr).then(res => {
+                var tempArr = this.state.restaurants;
+                var newRestArr = tempArr.concat(res);
+                this.setState({
+                    restaurants: newRestArr,
+                    isLoading: false,
+                    //Seattle
+                    currentLocation: {
+                        lat: newRestArr[0].coordinates.latitude,
+                        lng: newRestArr[0].coordinates.longitude
+                    }
+                })
+                // console.log(newRestArr);
+            });
+        }
 
-    // }
+    }
 
     componentDidMount() {
-        // below code will crash the app when refresh this page, becareful
+        // below commented out code will crash the app when refresh this page, becareful
         // console.log("props " + this.props.auth.user._id);
 
         var userID = this.state.userID;
@@ -204,18 +206,26 @@ class Preference extends Component {
             .post('/api/preferences', body, config)
             .then(res => {
                 // console.log(res);
-                console.log(res.data);
+                // console.log(res.data);
             })
             .catch(err => {
                 console.log(err.data);
             });
         // get recommendations from backend
+        var backendAPI = `http://0.0.0.0:5000/api/v1.0/generatenewbusinessdata/newuser`;
+
+        this.setState({
+            submitIsLoading: true
+        });
         axios
-            .post('http://0.0.0.0:5000/api/v1.0/generatenewbusinessdata/newuser', body)
+            .post(backendAPI, body, config)
             .then(res => {
                 if (res) {
-                    console.log(res);
+                    let temp = res.data.business_data;
+                    console.log(temp);
                     this.setState({
+                        rIDs: temp,
+                        submitIsLoading: false
                     });
                 } else {
                     console.log("Failed to load user data");
@@ -432,7 +442,7 @@ class Preference extends Component {
                         fluid
                         labeled
                         icon='heart outline'
-                        options={creperies}
+                        options={italian}
                         selection
                         placeholder={this.state.likes_italian ? "yes" : "no"}
                         valve={this.state.likes_italian}
@@ -440,11 +450,12 @@ class Preference extends Component {
                     />
                     <Divider />
                     <p></p>
-                    <Button onClick={this.handleSubmit} postive content='Submit' />
+                    <Button onClick={this.handleSubmit} postive content='Submit' />{this.state.submitIsLoading ? <Icon name='spinner'>Loading...</Icon> : ''}
                 </Segment>
                 <Grid >
                     <Grid.Column width={11}>
                         <ItemList items={this.state.restaurants} />
+                        <p></p>
                         <p>
                             {this.state.restaurants.length < 30 ?
                                 <Button color="teal" onClick={this.getFive} postive content='Get 5 recommended restaurants' />
@@ -456,9 +467,6 @@ class Preference extends Component {
                         <GMap items={this.state.restaurants} currentLocation={this.state.currentLocation} />
                     </Grid.Column>
                 </Grid>
-
-
-
                 {this.state.isLoading ? <Icon name='spinner'>Loading...</Icon> : ''}
 
             </Fragment>
