@@ -6,6 +6,7 @@ from flask import request
 from api.utils.responses import response_with
 from api.utils import responses as resp
 from api.models.user import users
+#from api.models.newuserdb import newuserdata
 from api.models.preferences import preferences
 import joblib
 import pandas as pd
@@ -20,7 +21,13 @@ import urllib
 import time
 import collections
 from sklearn.metrics import jaccard_similarity_score
+from flask_cors import CORS, cross_origin
+
+#app = Flask(__name__)
+#cors = CORS(app, support_credentials=True)
+
 route_path_general = Blueprint("route_path_general", __name__)
+CORS(route_path_general)
 
 API_KEY = "dn1j4olzNIiHc9SWJmYhRHLR1ytzLQrVc-B0P-kcPzECXQaisAknSQeq70Gnxj2DoLhWwfTnN1YNWDA89bRWbtogs_qvN_gpK8qvvZqPelpOWiUCUg6UZE0SkatsXXYx"
 API_HOST = 'https://api.yelp.com'
@@ -218,8 +225,6 @@ def get_business_attributes(list_of_jsons): #given a list of json's, sanitize js
         if delete_invalid_json == False: #append json to list if all attributes are valid
             dictionary_updated = dict(dictionary_of_json)
             ls.append(dictionary_updated)
-    print(count)
-
     return ls
 
 def get_recommendation_new_user(likes_japanese, likes_mexican, likes_italian, likes_american, likes_chinese, likes_thai, likes_creperies, likes_french):
