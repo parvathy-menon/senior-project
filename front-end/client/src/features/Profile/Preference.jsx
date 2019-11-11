@@ -13,7 +13,7 @@ var jwt = require('jsonwebtoken');
 //     { key: 'fmca', text: 'Fremont', value: 'fmca' },
 // ]
 
-const american = [
+const mexican = [
     { key: '1', text: 'yes', value: true },
     { key: '2', text: 'no', value: false }
 ]
@@ -23,12 +23,33 @@ const chinese = [
     { key: '2', text: 'no', value: false }
 ]
 
-const mexican = [
+const american = [
     { key: '1', text: 'yes', value: true },
     { key: '2', text: 'no', value: false }
 ]
 
 const vietnamese = [
+    { key: '1', text: 'yes', value: true },
+    { key: '2', text: 'no', value: false }
+]
+
+const creperies = [
+    { key: '1', text: 'yes', value: true },
+    { key: '2', text: 'no', value: false }
+]
+const french = [
+    { key: '1', text: 'yes', value: true },
+    { key: '2', text: 'no', value: false }
+]
+const thai = [
+    { key: '1', text: 'yes', value: true },
+    { key: '2', text: 'no', value: false }
+]
+const japanese = [
+    { key: '1', text: 'yes', value: true },
+    { key: '2', text: 'no', value: false }
+]
+const italian = [
     { key: '1', text: 'yes', value: true },
     { key: '2', text: 'no', value: false }
 ]
@@ -60,7 +81,16 @@ class Preference extends Component {
             currentLocation: {
                 lat: 47.444,
                 lng: -122.176
-            }
+            },
+            likes_mexican: false,
+            likes_chinese: false,
+            likes_american: false,
+            likes_vietnamese: false,
+            likes_creperies: false,
+            likes_french: false,
+            likes_thai: false,
+            likes_japanese: false,
+            likes_italian: false
         }
     }
 
@@ -126,10 +156,15 @@ class Preference extends Component {
                 .then(res => {
                     if (res) {
                         this.setState({
-                            likes_american: res.data[0].likes_american,
-                            likes_chinese: res.data[0].likes_chinese,
                             likes_mexican: res.data[0].likes_mexican,
-                            likes_vietnamese: res.data[0].likes_vietnamese
+                            likes_chinese: res.data[0].likes_chinese,
+                            likes_american: res.data[0].likes_american,
+                            likes_vietnamese: res.data[0].likes_vietnamese,
+                            likes_creperies: res.data[0].likes_creperies,
+                            likes_french: res.data[0].likes_french,
+                            likes_thai: res.data[0].likes_thai,
+                            likes_japanese: res.data[0].likes_japanese,
+                            likes_italian: res.data[0].likes_italian
                         });
                     } else {
                         console.log("Failed to load user data");
@@ -155,17 +190,36 @@ class Preference extends Component {
         // Request body
         const body = {
             userID: userID,
-            likes_american: this.state.likes_american,
-            likes_chinese: this.state.likes_chinese,
             likes_mexican: this.state.likes_mexican,
-            likes_vietnamese: this.state.likes_vietnamese
+            likes_chinese: this.state.likes_chinese,
+            likes_american: this.state.likes_american,
+            likes_vietnamese: this.state.likes_vietnamese,
+            likes_creperies: this.state.likes_creperies,
+            likes_french: this.state.likes_french,
+            likes_thai: this.state.likes_thai,
+            likes_japanese: this.state.likes_japanese,
+            likes_italian: this.state.likes_italian
         };
-        //console.log(body);
         axios
             .post('/api/preferences', body, config)
             .then(res => {
                 // console.log(res);
                 console.log(res.data);
+            })
+            .catch(err => {
+                console.log(err.data);
+            });
+        // get recommendations from backend
+        axios
+            .post('http://0.0.0.0:5000/api/v1.0/generatenewbusinessdata/newuser', body)
+            .then(res => {
+                if (res) {
+                    console.log(res);
+                    this.setState({
+                    });
+                } else {
+                    console.log("Failed to load user data");
+                }
             })
             .catch(err => {
                 console.log(err.data);
@@ -180,10 +234,9 @@ class Preference extends Component {
     //     });
     // }
 
-    onChangeAmerican = (e, data) => {
-        // console.log('data.value ' + data.value);
+    onChangeMexican = (e, data) => {
         this.setState({
-            likes_american: data.value
+            likes_mexican: data.value
         });
     }
     onChangeChinese = (e, data) => {
@@ -192,14 +245,40 @@ class Preference extends Component {
             likes_chinese: data.value
         });
     }
-    onChangeMexican = (e, data) => {
+    onChangeAmerican = (e, data) => {
+        // console.log('data.value ' + data.value);
         this.setState({
-            likes_mexican: data.value
+            likes_american: data.value
         });
     }
     onChangeVietnamese = (e, data) => {
         this.setState({
             likes_vietnamese: data.value
+        });
+    }
+    onChangeCreperies = (e, data) => {
+        this.setState({
+            likes_creperies: data.value
+        });
+    }
+    onChangeFrench = (e, data) => {
+        this.setState({
+            likes_french: data.value
+        });
+    }
+    onChangeThai = (e, data) => {
+        this.setState({
+            likes_thai: data.value
+        });
+    }
+    onChangeJapanese = (e, data) => {
+        this.setState({
+            likes_japanese: data.value
+        });
+    }
+    onChangeItalian = (e, data) => {
+        this.setState({
+            likes_italian: data.value
         });
     }
 
@@ -288,6 +367,76 @@ class Preference extends Component {
                         placeholder={this.state.likes_vietnamese ? "yes" : "no"}
                         valve={this.state.likes_vietnamese}
                         onChange={this.onChangeVietnamese}
+                    />
+                    <Divider />
+                    <Header>Do you like Creperies food</Header>
+                    <Dropdown
+                        button
+                        className='icon'
+                        fluid
+                        labeled
+                        icon='heart outline'
+                        options={creperies}
+                        selection
+                        placeholder={this.state.likes_creperies ? "yes" : "no"}
+                        valve={this.state.likes_creperies}
+                        onChange={this.onChangeCreperies}
+                    />
+                    <Divider />
+                    <Header>Do you like French food</Header>
+                    <Dropdown
+                        button
+                        className='icon'
+                        fluid
+                        labeled
+                        icon='heart outline'
+                        options={french}
+                        selection
+                        placeholder={this.state.likes_french ? "yes" : "no"}
+                        valve={this.state.likes_french}
+                        onChange={this.onChangeFrench}
+                    />
+                    <Divider />
+                    <Header>Do you like Thai food</Header>
+                    <Dropdown
+                        button
+                        className='icon'
+                        fluid
+                        labeled
+                        icon='heart outline'
+                        options={thai}
+                        selection
+                        placeholder={this.state.likes_thai ? "yes" : "no"}
+                        valve={this.state.likes_thai}
+                        onChange={this.onChangeThai}
+                    />
+                    <Divider />
+                    <Header>Do you like Japanese food</Header>
+                    <Dropdown
+                        button
+                        className='icon'
+                        fluid
+                        labeled
+                        icon='heart outline'
+                        options={japanese}
+                        selection
+                        placeholder={this.state.likes_japanese ? "yes" : "no"}
+                        valve={this.state.likes_japanese}
+                        onChange={this.onChangeJapanese}
+                    />
+                    <Divider />
+                    <Header>Do you like Italian food</Header>
+                    <Dropdown
+                        button
+                        className='icon'
+                        fluid
+                        labeled
+                        icon='heart outline'
+                        options={creperies}
+                        selection
+                        placeholder={this.state.likes_italian ? "yes" : "no"}
+                        valve={this.state.likes_italian}
+                        onChange={this.onChangeItalian}
                     />
                     <Divider />
                     <p></p>

@@ -19,6 +19,26 @@ const PreferenceSchema = new Schema({
     likes_vietnamese: {
         type: Boolean,
         required: true
+    },
+    likes_creperies: {
+        type: Boolean,
+        required: true
+    },
+    likes_french: {
+        type: Boolean,
+        required: true
+    },
+    likes_thai: {
+        type: Boolean,
+        required: true
+    },
+    likes_japanese: {
+        type: Boolean,
+        required: true
+    },
+    likes_italian: {
+        type: Boolean,
+        required: true
     }
 });
 
