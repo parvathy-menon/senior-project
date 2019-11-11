@@ -63,25 +63,15 @@ class NavBar extends Component {
                             Yelp Recommender
                         </Link>
                     </Menu.Item>
-                    <Menu.Item>
-                        <Link to="/profile">
-                            Profile
-                        </Link>
-                    </Menu.Item>
+                    {isAuthenticated ?
+                        <Menu.Item><Link to="/profile"> Profile </Link></Menu.Item> : ""}
                     <Menu.Item>
                         <Link to="/existinguser">
                             Existing User
                         </Link>
                     </Menu.Item>
                     <Menu.Item position="right">
-                        {/* <Link to="/profile">
-                            Profile
-                        </Link>
-                        <Button basic inverted content="Login" />
-                        <Button basic inverted content="Sign Out" style={{ marginLeft: '0.5em' }} /> */}
-
                         {isAuthenticated ? authLinks : guestLinks}
-
                     </Menu.Item>
                 </Container>
             </Menu>

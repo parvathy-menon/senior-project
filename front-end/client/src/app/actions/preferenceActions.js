@@ -1,7 +1,6 @@
 // jun might not need this one
 import { GET_ITEMS, ITEMS_LOADING } from './types';
 import axios from 'axios';
-import { tokenConfig } from './authActions';
 import { returnErrors } from './errorActions';
 
 export const getItems = () => dispatch => {
