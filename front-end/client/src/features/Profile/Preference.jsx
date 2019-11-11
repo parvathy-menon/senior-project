@@ -157,17 +157,21 @@ class Preference extends Component {
                 .get(address) // using the proxy
                 .then(res => {
                     if (res) {
-                        this.setState({
-                            likes_mexican: res.data[0].likes_mexican,
-                            likes_chinese: res.data[0].likes_chinese,
-                            likes_american: res.data[0].likes_american,
-                            likes_vietnamese: res.data[0].likes_vietnamese,
-                            likes_creperies: res.data[0].likes_creperies,
-                            likes_french: res.data[0].likes_french,
-                            likes_thai: res.data[0].likes_thai,
-                            likes_japanese: res.data[0].likes_japanese,
-                            likes_italian: res.data[0].likes_italian
-                        });
+                        if (res.data.length !== 0) {
+                            this.setState({
+                                likes_mexican: res.data[0].likes_mexican,
+                                likes_chinese: res.data[0].likes_chinese,
+                                likes_american: res.data[0].likes_american,
+                                likes_vietnamese: res.data[0].likes_vietnamese,
+                                likes_creperies: res.data[0].likes_creperies,
+                                likes_french: res.data[0].likes_french,
+                                likes_thai: res.data[0].likes_thai,
+                                likes_japanese: res.data[0].likes_japanese,
+                                likes_italian: res.data[0].likes_italian
+                            });
+                        }
+                        console.log("res");
+                        console.log(res);
                     } else {
                         console.log("Failed to load user data");
                     }
@@ -202,11 +206,14 @@ class Preference extends Component {
             likes_japanese: this.state.likes_japanese,
             likes_italian: this.state.likes_italian
         };
+        //update preference in database
         axios
             .post('/api/preferences', body, config)
             .then(res => {
+                // console.log("I was below");
                 // console.log(res);
                 // console.log(res.data);
+                // console.log("I was above");
             })
             .catch(err => {
                 console.log(err.data);
@@ -217,12 +224,18 @@ class Preference extends Component {
         this.setState({
             submitIsLoading: true
         });
+
+        // clear the restaurants in state
+        this.setState({
+            restaurants: [],
+        });
+        // get recommendation from backend
         axios
             .post(backendAPI, body, config)
             .then(res => {
                 if (res) {
                     let temp = res.data.business_data;
-                    console.log(temp);
+                    // console.log(temp);
                     this.setState({
                         rIDs: temp,
                         submitIsLoading: false

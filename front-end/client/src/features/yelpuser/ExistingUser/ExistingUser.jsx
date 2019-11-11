@@ -20,6 +20,9 @@ class ExistingUser extends Component {
         }
     }
 
+    // get yelp business data via heroku server
+    // some time, the heroku server will go down
+    // use the backup method
     getFive = event => {
         if (this.state.rIDs[0] !== undefined) {
             // need a loop to 'put' each object into restrant array
@@ -68,13 +71,12 @@ class ExistingUser extends Component {
         }
     }
 
-    // under development
+    // backend is missing the categories attribute
     // this is a backup method when heroku service is down
     // getFive = event => {
     //     if (this.state.rIDs[0] !== undefined) {
     //         // need a loop to 'put' each object into restrant array
     //         var restaurantsArr = [];
-    //         var count = this.state.restaurants.length;
 
     //         let userID = this.state.userID;
 
@@ -83,13 +85,11 @@ class ExistingUser extends Component {
     //             getFiveIsLoading: true
     //         })
     //         var tenUsers = [];
-
     //         axios
     //             .get(api)
     //             .then(res => {
     //                 // console.log(res.data.business_data);
     //                 restaurantsArr = res.data.business_data;
-
     //                 this.setState({
     //                     eIDs: tenUsers,
     //                     getFiveIsLoading: false,
@@ -101,7 +101,6 @@ class ExistingUser extends Component {
     //                         lng: restaurantsArr[0].coordinates.longitude
     //                     }
     //                 })
-
     //             })
     //             .catch(err => {
     //                 console.log(err.data);
