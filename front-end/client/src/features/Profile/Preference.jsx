@@ -63,10 +63,8 @@ class Preference extends Component {
     constructor(props) {
         super(props);
         const { auth } = props;
-        // console.log("token : " + auth.token);
 
         var decoded = jwt.decode(auth.token, { complete: true });
-        // console.log(decoded.payload);
         var userID = null
         if (decoded !== null) {
             userID = decoded.payload.id;
@@ -79,6 +77,7 @@ class Preference extends Component {
             restaurants: [],
             rIDs: [],
             isLoading: false,
+            isNewUser: false,
             currentLocation: {
                 lat: 47.444,
                 lng: -122.176
@@ -145,9 +144,27 @@ class Preference extends Component {
 
     }
 
+
+
     componentDidMount() {
         // below commented out code will crash the app when refresh this page, becareful
         // console.log("props " + this.props.auth.user._id);
+
+        var getUserInforAPI = '/api/users/';
+        axios
+            .get(getUserInforAPI + this.state.userID)
+            .then(res => {
+                console.log("user object : ");
+                console.log(res.data.uID);
+                if (!res.data.uID) {
+                    this.setState({
+                        isNewUser: true
+                    })
+                }
+            })
+            .catch(err => {
+                console.log(err.data);
+            });
 
         var userID = this.state.userID;
 
@@ -170,8 +187,6 @@ class Preference extends Component {
                                 likes_italian: res.data[0].likes_italian
                             });
                         }
-                        console.log("res");
-                        console.log(res);
                     } else {
                         console.log("Failed to load user data");
                     }
@@ -316,7 +331,7 @@ class Preference extends Component {
         // } = this.state;
         return (
             <Fragment>
-                <Segment>
+                {this.state.isNewUser ? <Segment>
                     {/* <Header>City:</Header>
                     <Dropdown
                         button
@@ -464,7 +479,10 @@ class Preference extends Component {
                     <Divider />
                     <p></p>
                     <Button onClick={this.handleSubmit} postive content='Submit' />{this.state.submitIsLoading ? <Icon name='spinner'>Loading...</Icon> : ''}
-                </Segment>
+                </Segment> :
+                    <p> For existing user</p>
+                }
+
                 <Grid >
                     <Grid.Column width={11}>
                         <ItemList items={this.state.restaurants} />
@@ -482,7 +500,7 @@ class Preference extends Component {
                 </Grid>
                 {this.state.isLoading ? <Icon name='spinner'>Loading...</Icon> : ''}
 
-            </Fragment>
+            </Fragment >
         );
     }
 }
