@@ -6,7 +6,7 @@ from flask import request
 from api.utils.responses import response_with
 from api.utils import responses as resp
 from api.models.user import users
-#from api.models.newuserdb import newuserdata
+from api.models.newuserdb import newuserbusinessdata
 from api.models.preferences import preferences
 import joblib
 import pandas as pd
@@ -90,10 +90,11 @@ def generate_business_data(user_id):
     except Exception:
         return response_with(resp.INVALID_INPUT_422)
 
-@route_path_general.route('/v1.0/generatenewbusinessdata/newuser', methods= ['POST'])
-def generate_newuser_business_data():
+@route_path_general.route('/v1.0/submit', methods = ['POST'])
+def save_preferences():
     try:
         data = request.get_json()
+        user_id = ObjectId(data['userID'])
         likes_japanese = bool(data['likes_japanese'])
         likes_mexican = bool(data['likes_mexican'])
         likes_italian = bool(data['likes_italian'])
@@ -102,8 +103,40 @@ def generate_newuser_business_data():
         likes_thai = bool(data['likes_thai'])
         likes_creperies = bool(data['likes_creperies'])
         likes_french = bool(data['likes_french'])
-        j = get_recommendation_new_user(likes_japanese, likes_mexican, likes_italian, likes_american, likes_chinese, likes_thai, likes_creperies, likes_french)
-        return response_with(resp.SUCCESS_200, value={"business_data": j})
+        if(len(preferences.objects(_id=user_id)) != 0):
+            preference_delete = preferences.objects(_id=user_id)
+            preference_delete.delete()
+        preference_save = preferences(_id=user_id, likes_mexican=likes_mexican, likes_japanese=likes_japanese, likes_italian=likes_italian,likes_american=likes_american,likes_chinese=likes_chinese,likes_thai=likes_thai,likes_creperies=likes_creperies,likes_french=likes_french)
+        preference_save.save()
+        if(len(newuserbusinessdata.objects(_id=user_id)) != 0):
+            newuserbusinessdata.objects(_id=user_id).delete()
+        return response_with(resp.SUCCESS_200)
+    except Exception:
+        return response_with(resp.INVALID_INPUT_422)
+
+@route_path_general.route('/v1.0/generatenewbusinessdata/newuser', methods= ['POST'])
+def generate_newuser_business_data():
+    try:
+        data = request.get_json()
+        user_id = ObjectId(data['userID'])
+        if(len(newuserbusinessdata.objects(_id = user_id)) != 0):
+            list = []
+            users = newuserbusinessdata.objects(_id = user_id)
+            for i in users:
+                return response_with(resp.SUCCESS_200, value={"business_data": i['business_id']})
+        else:
+            likes_japanese = bool(data['likes_japanese'])
+            likes_mexican = bool(data['likes_mexican'])
+            likes_italian = bool(data['likes_italian'])
+            likes_american = bool(data['likes_american'])
+            likes_chinese = bool(data['likes_chinese'])
+            likes_thai = bool(data['likes_thai'])
+            likes_creperies = bool(data['likes_creperies'])
+            likes_french = bool(data['likes_french'])
+            j = get_recommendation_new_user(likes_japanese, likes_mexican, likes_italian, likes_american, likes_chinese, likes_thai, likes_creperies, likes_french)
+            newEntry = newuserbusinessdata(_id=user_id, business_id=j)
+            newEntry.save()
+            return response_with(resp.SUCCESS_200, value={"business_data": j})
     except Exception:
         return response_with(resp.INVALID_INPUT_422)
 
