@@ -145,12 +145,14 @@ class Preference extends Component {
     }
 
 
-
     componentDidMount() {
         // below commented out code will crash the app when refresh this page, becareful
         // console.log("props " + this.props.auth.user._id);
 
         var getUserInforAPI = '/api/users/';
+        // get the uID, 
+        // existing users have uID, 
+        // new users have not uID
         axios
             .get(getUserInforAPI + this.state.userID)
             .then(res => {
@@ -201,7 +203,6 @@ class Preference extends Component {
         event.preventDefault();
 
         var userID = this.state.userID;
-
         // Headers
         const config = {
             headers: {
@@ -221,20 +222,23 @@ class Preference extends Component {
             likes_japanese: this.state.likes_japanese,
             likes_italian: this.state.likes_italian
         };
-        //update preference in database
-        axios
-            .post('/api/preferences', body, config)
-            .then(res => {
-                // console.log("I was below");
-                // console.log(res);
-                // console.log(res.data);
-                // console.log("I was above");
-            })
-            .catch(err => {
-                console.log(err.data);
-            });
+        // Let backend handle preference update in DB
+        // //update preference in database
+        // axios
+        //     .post('/api/preferences', body, config)
+        //     .then(res => {
+        //         // console.log("I was below");
+        //         // console.log(res);
+        //         // console.log(res.data);
+        //         // console.log("I was above");
+        //     })
+        //     .catch(err => {
+        //         console.log(err.data);
+        //     });
+
         // get recommendations from backend
-        var backendAPI = `http://0.0.0.0:5000/api/v1.0/generatenewbusinessdata/newuser`;
+        // var backendAPI = `http://0.0.0.0:5000/api/v1.0/generatenewbusinessdata/newuser`;
+        var backendAPI = "http://0.0.0.0:5000/api/v1.0/submit";
 
         this.setState({
             submitIsLoading: true
@@ -480,7 +484,7 @@ class Preference extends Component {
                     <p></p>
                     <Button onClick={this.handleSubmit} postive content='Submit' />{this.state.submitIsLoading ? <Icon name='spinner'>Loading...</Icon> : ''}
                 </Segment> :
-                    <p> For existing user</p>
+                    <p></p>
                 }
 
                 <Grid >

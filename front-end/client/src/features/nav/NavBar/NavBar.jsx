@@ -65,11 +65,11 @@ class NavBar extends Component {
                     </Menu.Item>
                     {isAuthenticated ?
                         <Menu.Item><Link to="/profile"> Profile </Link></Menu.Item> : ""}
-                    <Menu.Item>
+                    {/* <Menu.Item>
                         <Link to="/existinguser">
                             Existing User
                         </Link>
-                    </Menu.Item>
+                    </Menu.Item> */}
                     <Menu.Item position="right">
                         {isAuthenticated ? authLinks : guestLinks}
                     </Menu.Item>
