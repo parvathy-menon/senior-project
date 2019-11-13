@@ -103,10 +103,11 @@ def save_preferences():
         likes_thai = bool(data['likes_thai'])
         likes_creperies = bool(data['likes_creperies'])
         likes_french = bool(data['likes_french'])
+        likes_vietnamese = bool(data['likes_vietnamese'])
         if(len(preferences.objects(_id=user_id)) != 0):
             preference_delete = preferences.objects(_id=user_id)
             preference_delete.delete()
-        preference_save = preferences(_id=user_id, likes_mexican=likes_mexican, likes_japanese=likes_japanese, likes_italian=likes_italian,likes_american=likes_american,likes_chinese=likes_chinese,likes_thai=likes_thai,likes_creperies=likes_creperies,likes_french=likes_french)
+        preference_save = preferences(_id=user_id, likes_vietnamese=likes_vietnamese, likes_mexican=likes_mexican, likes_japanese=likes_japanese, likes_italian=likes_italian,likes_american=likes_american,likes_chinese=likes_chinese,likes_thai=likes_thai,likes_creperies=likes_creperies,likes_french=likes_french)
         preference_save.save()
         if(len(newuserbusinessdata.objects(_id=user_id)) != 0):
             newuserbusinessdata.objects(_id=user_id).delete()
