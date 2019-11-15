@@ -124,7 +124,7 @@ def generate_newuser_business_data():
             list = []
             users = newuserbusinessdata.objects(_id = user_id)
             for i in users:
-                return response_with(resp.SUCCESS_200, value={"business_data": i['business_id']})
+                return response_with(resp.SUCCESS_200, value={"business_data": get_recommendation_json(i['business_id'])})
         else:
             likes_japanese = bool(data['likes_japanese'])
             likes_mexican = bool(data['likes_mexican'])
@@ -137,7 +137,7 @@ def generate_newuser_business_data():
             j = get_recommendation_new_user(likes_japanese, likes_mexican, likes_italian, likes_american, likes_chinese, likes_thai, likes_creperies, likes_french)
             newEntry = newuserbusinessdata(_id=user_id, business_id=j)
             newEntry.save()
-            return response_with(resp.SUCCESS_200, value={"business_data": j})
+            return response_with(resp.SUCCESS_200, value={"business_data": get_recommendation_json(j)})
     except Exception:
         return response_with(resp.INVALID_INPUT_422)
 
@@ -223,10 +223,28 @@ def get_business_attributes(list_of_jsons): #given a list of json's, sanitize js
             delete_invalid_json = True
             continue
         if isValid(p, 'location'):
-            dictionary_of_json['location']['address1'] = p.get('location')['display_address'][0]
-            dictionary_of_json['location']['city'] = p.get('location')['city']
-            dictionary_of_json['location']['state'] = p.get('location')['state']
-            dictionary_of_json['location']['zip_code'] = p.get('location')['zip_code']
+            if 'address1' in p.get('location'):
+                dictionary_of_json['location']['address1'] = p.get('location')['address1']
+            elif 'display_address' in p.get('location'):
+                dictionary_of_json['location']['address1'] = p.get('location')['display_address'][0]
+            else:
+                delete_invalid_json = True
+                continue
+            if 'city' in p.get('location'):
+                dictionary_of_json['location']['city'] = p.get('location')['city']
+            else:
+                delete_invalid_json = True
+                continue
+            if 'state' in p.get('location'):
+                dictionary_of_json['location']['state'] = p.get('location')['state']
+            else:
+                delete_invalid_json = True
+                continue
+            if 'zip_code' in p.get('location'):
+                dictionary_of_json['location']['zip_code'] = p.get('location')['zip_code']
+            else:
+                delete_invalid_json = True
+                continue
         else:
             delete_invalid_json = True
             continue
@@ -237,6 +255,11 @@ def get_business_attributes(list_of_jsons): #given a list of json's, sanitize js
             continue
         if isValid(p, 'name'):
             dictionary_of_json['name'] = p.get('name')
+        else:
+            delete_invalid_json = True
+            continue
+        if isValid(p, 'categories'):
+            dictionary_of_json['categories'] = p.get('categories')
         else:
             delete_invalid_json = True
             continue
