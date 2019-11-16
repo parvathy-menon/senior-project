@@ -78,6 +78,7 @@ class Preference extends Component {
             rIDs: [],
             isLoading: false,
             isNewUser: false,
+            isGettingRecommendations: false,
             currentLocation: {
                 lat: 47.444,
                 lng: -122.176
@@ -95,52 +96,102 @@ class Preference extends Component {
         }
     }
 
-    // not done, waiting for backend
+    // this function has changed
+    // get 30 recommendation from the backend
+    // it was getting 5 directly from yelp API due to API limitaion.
     getFive = event => {
-        if (this.state.rIDs[0] !== undefined) {
-            // need a loop to 'put' each object into restrant array
-            var restaurantsArr = [];
-            var yelpAPI;
-            var count = this.state.restaurants.length;
 
-            // works, but too many requests at the same time make yelp API deny
-            for (let i = count; i < count + 5; i++) {
+        var backendRAPI = "http://0.0.0.0:5000/api/v1.0/generatenewbusinessdata/newuser";
 
-                yelpAPI = `${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/` + this.state.rIDs[i];
+        this.setState({
+            isGettingRecommendations: true
+        });
 
-                restaurantsArr.push(
-                    axios.get(yelpAPI, {
-                        headers: {
-                            Authorization: `Bearer ${process.env.REACT_APP_API_KEY}`
+        // clear the restaurants in state
+        this.setState({
+            restaurants: [],
+        });
+        const body = {
+            userID: this.state.userID,
+            likes_mexican: this.state.likes_mexican,
+            likes_chinese: this.state.likes_chinese,
+            likes_american: this.state.likes_american,
+            likes_vietnamese: this.state.likes_vietnamese,
+            likes_creperies: this.state.likes_creperies,
+            likes_french: this.state.likes_french,
+            likes_thai: this.state.likes_thai,
+            likes_japanese: this.state.likes_japanese,
+            likes_italian: this.state.likes_italian
+        };
+        // get recommendation from backend
+        axios
+            .post(backendRAPI, body)
+            .then(res => {
+                if (res) {
+                    let temp = res.data.business_data;
+                    console.log(temp);
+                    this.setState({
+                        restaurants: temp,
+                        isGettingRecommendations: false,
+                        currentLocation: {
+                            lat: temp[0].coordinates.latitude,
+                            lng: temp[0].coordinates.longitude
                         }
-                    }).then(
-                        result => new Promise(resolve => {
-                            this.setState({
-                                isLoading: true
-                            })
-                            resolve(result.data)
-                        })
-                    ).catch((err) => {
-                        console.log('error')
-                    })
-                );
-            }
-
-            Promise.all(restaurantsArr).then(res => {
-                var tempArr = this.state.restaurants;
-                var newRestArr = tempArr.concat(res);
-                this.setState({
-                    restaurants: newRestArr,
-                    isLoading: false,
-                    //Seattle
-                    currentLocation: {
-                        lat: newRestArr[0].coordinates.latitude,
-                        lng: newRestArr[0].coordinates.longitude
-                    }
-                })
-                // console.log(newRestArr);
+                    });
+                } else {
+                    console.log("Failed to load user data");
+                }
+            })
+            .catch(err => {
+                console.log(err.data);
             });
-        }
+
+        // the commented out code is for using heroku server
+        // changed to used the backend to do it.
+        // if (this.state.rIDs[0] !== undefined) {
+        //     // need a loop to 'put' each object into restrant array
+        //     var restaurantsArr = [];
+        //     var yelpAPI = "0.0.0.0:5000/api/v1.0/generatenewbusinessdata/newuser";
+        //     var count = this.state.restaurants.length;
+
+        //     // works, but too many requests at the same time make yelp API deny
+        //     for (let i = count; i < count + 5; i++) {
+
+        //         yelpAPI = `${'https://cors-anywhere.herokuapp.com/'}https://api.yelp.com/v3/businesses/` + this.state.rIDs[i];
+
+        //         restaurantsArr.push(
+        //             axios.get(yelpAPI, {
+        //                 headers: {
+        //                     Authorization: `Bearer ${process.env.REACT_APP_API_KEY}`
+        //                 }
+        //             }).then(
+        //                 result => new Promise(resolve => {
+        //                     this.setState({
+        //                         isLoading: true
+        //                     })
+        //                     resolve(result.data)
+        //                 })
+        //             ).catch((err) => {
+        //                 console.log('error')
+        //             })
+        //         );
+        //     }
+
+        //     Promise.all(restaurantsArr).then(res => {
+        //         var tempArr = this.state.restaurants;
+        //         var newRestArr = tempArr.concat(res);
+        //         this.setState({
+        //             restaurants: newRestArr,
+        //             isLoading: false,
+        //             //Seattle
+        //             currentLocation: {
+        //                 lat: newRestArr[0].coordinates.latitude,
+        //                 lng: newRestArr[0].coordinates.longitude
+        //             }
+        //         })
+        //         // console.log(newRestArr);
+        //     });
+        // }
 
     }
 
@@ -196,6 +247,7 @@ class Preference extends Component {
                 .catch(err => {
                     console.log(err.data);
                 });
+            this.getFive();
         }
     }
 
@@ -237,7 +289,6 @@ class Preference extends Component {
         //     });
 
         // get recommendations from backend
-        // var backendAPI = `http://0.0.0.0:5000/api/v1.0/generatenewbusinessdata/newuser`;
         var backendAPI = "http://0.0.0.0:5000/api/v1.0/submit";
 
         this.setState({
@@ -253,10 +304,8 @@ class Preference extends Component {
             .post(backendAPI, body, config)
             .then(res => {
                 if (res) {
-                    let temp = res.data.business_data;
-                    // console.log(temp);
+                    // console.log(res);
                     this.setState({
-                        rIDs: temp,
                         submitIsLoading: false
                     });
                 } else {
@@ -493,9 +542,10 @@ class Preference extends Component {
                         <p></p>
                         <p>
                             {this.state.restaurants.length < 30 ?
-                                <Button color="teal" onClick={this.getFive} postive content='Get 5 recommended restaurants' />
+                                <Button color="teal" onClick={this.getFive} postive content='Get recommended restaurants' />
                                 :
                                 <p>Only showing 30 recommended restaurants.</p>}
+                            {this.state.isGettingRecommendations ? <Icon name='spinner'>Loading...</Icon> : ''}
                         </p>
                     </Grid.Column>
                     <Grid.Column width={5}>
