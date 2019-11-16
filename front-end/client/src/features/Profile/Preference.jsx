@@ -74,6 +74,7 @@ class Preference extends Component {
             // city: '',
             // selectedCity: null,
             userID: userID,
+            uID: null,
             restaurants: [],
             rIDs: [],
             isLoading: false,
@@ -146,7 +147,7 @@ class Preference extends Component {
                 console.log(err.data);
             });
 
-        // the commented out code is for using heroku server
+        // below commented out code is for using heroku server
         // changed to used the backend to do it.
         // if (this.state.rIDs[0] !== undefined) {
         //     // need a loop to 'put' each object into restrant array
@@ -207,48 +208,71 @@ class Preference extends Component {
         axios
             .get(getUserInforAPI + this.state.userID)
             .then(res => {
-                console.log("user object : ");
-                console.log(res.data.uID);
+                // console.log("user object : ");
+                // console.log(res.data.uID);
                 if (!res.data.uID) {
                     this.setState({
                         isNewUser: true
                     })
+                    var userID = this.state.userID;
+
+                    if (userID !== null) {
+                        var address = '/api/preferences/' + userID;
+                        axios
+                            .get(address)
+                            .then(res => {
+                                if (res) {
+                                    if (res.data.length !== 0) {
+                                        this.setState({
+                                            likes_mexican: res.data[0].likes_mexican,
+                                            likes_chinese: res.data[0].likes_chinese,
+                                            likes_american: res.data[0].likes_american,
+                                            likes_vietnamese: res.data[0].likes_vietnamese,
+                                            likes_creperies: res.data[0].likes_creperies,
+                                            likes_french: res.data[0].likes_french,
+                                            likes_thai: res.data[0].likes_thai,
+                                            likes_japanese: res.data[0].likes_japanese,
+                                            likes_italian: res.data[0].likes_italian
+                                        });
+                                    }
+                                } else {
+                                    console.log("Failed to load user data");
+                                }
+                            })
+                            .catch(err => {
+                                console.log(err.data);
+                            });
+                        this.getFive();
+                    }
+                } else {
+                    this.setState({
+                        uID: res.data.uID,
+                        isGettingRecommendations: true
+                    })
+
+                    var existingUserAPI = "http://0.0.0.0:5000/api/v1.0/generatebusinessdata/" + res.data.uID
+                    axios
+                        .get(existingUserAPI)
+                        .then(res => {
+                            let temp = res.data.business_data;
+                            console.log(temp);
+                            this.setState({
+                                restaurants: temp,
+                                isGettingRecommendations: false,
+                                currentLocation: {
+                                    lat: temp[0].coordinates.latitude,
+                                    lng: temp[0].coordinates.longitude
+                                }
+                            });
+                        })
+                        .catch(err => {
+                            console.log(err.data);
+                        });
                 }
             })
             .catch(err => {
                 console.log(err.data);
             });
-
-        var userID = this.state.userID;
-
-        if (userID !== null) {
-            var address = '/api/preferences/' + userID;
-            axios
-                .get(address) // using the proxy
-                .then(res => {
-                    if (res) {
-                        if (res.data.length !== 0) {
-                            this.setState({
-                                likes_mexican: res.data[0].likes_mexican,
-                                likes_chinese: res.data[0].likes_chinese,
-                                likes_american: res.data[0].likes_american,
-                                likes_vietnamese: res.data[0].likes_vietnamese,
-                                likes_creperies: res.data[0].likes_creperies,
-                                likes_french: res.data[0].likes_french,
-                                likes_thai: res.data[0].likes_thai,
-                                likes_japanese: res.data[0].likes_japanese,
-                                likes_italian: res.data[0].likes_italian
-                            });
-                        }
-                    } else {
-                        console.log("Failed to load user data");
-                    }
-                })
-                .catch(err => {
-                    console.log(err.data);
-                });
-            this.getFive();
-        }
     }
 
     handleSubmit = event => {
@@ -542,7 +566,7 @@ class Preference extends Component {
                         <p></p>
                         <p>
                             {this.state.restaurants.length < 30 ?
-                                <Button color="teal" onClick={this.getFive} postive content='Get recommended restaurants' />
+                                <p>{!this.state.uID ? <Button color="teal" onClick={this.getFive} postive content='Get recommended restaurants' /> : <p></p>}</p>
                                 :
                                 <p>Only showing 30 recommended restaurants.</p>}
                             {this.state.isGettingRecommendations ? <Icon name='spinner'>Loading...</Icon> : ''}
