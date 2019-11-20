@@ -25,6 +25,7 @@ yelp_dataset/
 .env.development.local
 .env.test.local
 .env.production.local
+/front-end/config/keys.js
 
 npm-debug.log*
 yarn-debug.log*
