@@ -43,3 +43,10 @@ MONGO_URI = mongodb+srv://yunjunma:yunjunma@cluster0-jljac.mongodb.net/test?retr
     http://localhost:5000/api/preferences/5d9fdb2635ba2a3c968a0741
 2. response: 
   [{"_id":"5d9fdb2635ba2a3c968a0741","likes_mexican":false,"likes_chinese":true,"likes_american":true,"likes_vietnamese":false,"__v":0}]
+  
+# Machine Learning Branches - dev-preprocess, dev-recommender, dev-connect
+1. Git pull the .ipynb files (Jupyter Notebook files)
+2. Download Jupyter Notebook (https://jupyter.org/install) and Anaconda (https://www.anaconda.com/distribution/)
+3. Launch Jupyter Notebook application after installation.
+4. Jupyter Notebook will be opened in a browser. Use the browser GUI to browse through your directories to find the location of the      .pynb files, and click to open.
+5. Run the code cells in the Jupyter Notebook. If any errors occur due to uninstalled dependency packages, open Anaconda prompt to install dependencies.
