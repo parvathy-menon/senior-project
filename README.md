@@ -11,7 +11,14 @@ Senior Project Repository
 3. Run `virtual venv` to create a virtual environment.
 4. To activate the virtual environment, do `source venv/bin/activate`.
 5. To install all the necessary Python packages necessary to make this project run, navigate to the `src` folder by doing `cd src` and do `pip install -r requirements.txt`.
-6. To start the back-end, run the Flask server by entering `python run.py`.
+6. Some of the endpoints in the backend need to connect to files with a complete path in it. So, navigate to the endpoints by opening the file `src/api/routes/routes_general.py`.
+7. Download this file on your system and put it in your `src` folder: https://drive.google.com/file/d/1DAeITx02hzHCJUF0spo0-BgAQcvOPJVB/view. 
+8. On line 78, change the `joblib.load('src/svdpp_las_vegas_existing_user_model.pkl')` to `joblib.load('/Users/name/.../src/svdpp_las_vegas_existing_user_model.pkl')` with the "..." indicating the complete filepath for the pkl file, which is different on each system.
+9. Do the same as above for line 79. Change from `us_restaurant_review_lasvegas_nv = pd.read_csv("src/us_restaurant_review_lasvegas_nv.csv")` to `us_restaurant_review_lasvegas_nv = pd.read_csv("/Users/name/.../src/us_restaurant_review_lasvegas_nv.csv")`.
+10. Do the same as above for line 157.
+11. Do the same as above for line 158.
+12. Do the same as above for line 289.
+13. To start the back-end, run the Flask server by entering `python run.py`.
 
 # monogoDB information
 web login: https://cloud.mongodb.com/user#/atlas/login
