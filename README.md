@@ -1,9 +1,18 @@
-# senior-project front-end
+# senior-project
 Senior Project Repository
 
-# install and start
+# install and start front-end
 1. After you clone, use “npm run client-install” and "npm install" to do all dependency install.
 2. use “npm run dev” to run the front-end and front-end server.
+
+# install and start back-end
+1. Make sure you have Python 3.7 installed. If you do not, make sure to download and install Python 3.7 on your system.
+2. Run `pip install virtualenv` to install the virtual environment for Flask.
+3. Run `virtual venv` to create a virtual environment.
+4. To activate the virtual environment, do `source venv/bin/activate`.
+5. To install all the necessary Python packages necessary to make this project run, navigate to the `src` folder by doing `cd src` and do `pip install -r requirements.txt`.
+6. To start the back-end, run the Flask server by entering `python run.py`.
+
 
 # monogoDB information
 web login: https://cloud.mongodb.com/user#/atlas/login
