@@ -2,8 +2,8 @@
 Senior Project Repository
 
 # install and start front-end
-1. After you clone, use `npm run client-install` and `npm install` to do all dependency install.
-2. use `npm run dev` to run the front-end and front-end server.
+1. After you clone, in the front-end directory, use `npm run client-install` and `npm install` to do all dependency install.
+2. use `npm run dev` to run the front-end and front-end express server.
 
 # install and start back-end
 1. Make sure you have Python 3.7 installed. If you do not, make sure to download and install Python 3.7 on your system.
