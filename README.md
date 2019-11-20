@@ -18,7 +18,7 @@ Senior Project Repository
 10. Do the same as above for line 157.
 11. Do the same as above for line 158.
 12. Do the same as above for line 289.
-13. To start the back-end, run the Flask server by entering `python run.py`.
+13. To start the back-end, navigate back to the `src` folder and run the Flask server by entering `python run.py`.
 
 # monogoDB information
 web login: https://cloud.mongodb.com/user#/atlas/login
