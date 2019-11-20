@@ -7,12 +7,11 @@ Senior Project Repository
 
 # install and start back-end
 1. Make sure you have Python 3.7 installed. If you do not, make sure to download and install Python 3.7 on your system.
-2. Run `pip install virtualenv` to install the virtual environment for Flask.
+2. Run `pip install virtualenv` to install the virtual environment for Flask. (If `pip` does not work for you, try `pip3`. Depending on how your system is set up, `pip` and `python` may be automatically configured for Python 2, while `python3` and `pip3` could be configured for Python 3. But make sure you are using Python 3 in all cases. You can verify this by doing `python --version` or `python3 --version`).
 3. Run `virtual venv` to create a virtual environment.
 4. To activate the virtual environment, do `source venv/bin/activate`.
 5. To install all the necessary Python packages necessary to make this project run, navigate to the `src` folder by doing `cd src` and do `pip install -r requirements.txt`.
 6. To start the back-end, run the Flask server by entering `python run.py`.
-
 
 # monogoDB information
 web login: https://cloud.mongodb.com/user#/atlas/login
