@@ -75,7 +75,7 @@ class LoginModal extends Component {
         // Attempt to login
         this.props.login(user)
         // .then(
-        //     (res) => this.context.router.push('/testing')
+        //     (res) => this.context.router.push('/profile')
 
         // )
     };

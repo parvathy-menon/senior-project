@@ -4,3 +4,4 @@ class Keys:
     BUSINESS_PATH = '/v3/businesses/'
     PKL_DIR = '/Users/parvathy/Desktop/senior-project/src/svdpp_las_vegas_existing_user_model.pkl'
     CSV_DIR = "/Users/parvathy/Desktop/senior-project/src/us_restaurant_review_lasvegas_nv.csv"
+    FEATURES_DIR = "/Users/parvathy/Desktop/senior-project/src/restaurant_features.csv"

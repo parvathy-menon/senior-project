@@ -19,6 +19,7 @@ class ItemListItem extends Component {
                                         <Item.Header as='a' href={item.url} target="_blank"><h3>{item.name}</h3></Item.Header>
                                         <Rating icon='star' defaultRating={item.rating} maxRating={5} disabled />
                                         <Item.Meta>Price: {item.price}</Item.Meta>
+                                        {/* comment out below block if the backend still missing the categories attribute */}
                                         <Item.Description>
                                             Category:
                                             {item.categories.map(category => (

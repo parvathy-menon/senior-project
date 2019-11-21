@@ -4,6 +4,7 @@ chardet==3.0.4
 click==6.6
 dnspython==1.16.0
 Flask==0.11.1
+Flask-Cors==3.0.8
 Flask-SQLAlchemy==2.1
 -e git://github.com/gangverk/flask-swagger.git@fa4eb7d4cbebfd30d4033626160881b77ad2b156#egg=flask_swagger
 httplib2==0.14.0

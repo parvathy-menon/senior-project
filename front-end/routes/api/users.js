@@ -3,15 +3,43 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const config = require('config');
 const jwt = require('jsonwebtoken');
+var ObjectId = require('mongodb').ObjectId;
 
 // item model
 const User = require('../../models/User');
 
-// @ route  GEt api/users
+// @ route  GET api/users
+// @desc    Get the uID to determine wether an existing user or a new user, a new user is empty in the uID field
+// @access  Piblic
+
+// router.get('/', (req, res) => {
+//     var userID = req.body._id;
+//     var o_id = new ObjectId(userID);
+//     User.findOne({ _id: o_id })
+//         .then(user => res.json(user));
+//     // .then(user => {
+//     //     // not sure why only not return uid // have to return the whole object,sorry
+//     //     res.json({ uid: user[0].uid })
+//     // });
+
+// });
+router.get('/:id', (req, res) => {
+    var userID = req.params.id;
+    var o_id = new ObjectId(userID);
+    User.findOne({ _id: o_id })
+        .then(user => res.json(user));
+    // .then(user => {
+    //     // not sure why only not return uid // have to return the whole object,sorry
+    //     res.json({ uid: user[0].uid })
+    // });
+
+});
+
+// @ route  POST api/users
 // @desc    Register new user
 // @access  Piblic
 
-// "/" means "api/items/"
+// "/" means "/api/users"
 router.post('/', (req, res) => {
     const { name, password } = req.body;
 
