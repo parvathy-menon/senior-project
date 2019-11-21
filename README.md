@@ -37,11 +37,6 @@ The remaining keys, `PKL_DIR`, `CSV_DIR`, and `FEATURES_DIR` will require the fi
 
 Populate the keys with appropriate file paths.
 
-# monogoDB information
-web login: https://cloud.mongodb.com/user#/atlas/login
-Login username: yunjunma@gmail.com
-password:  SeSp195b!
-
 # Yelp API Key
 `REACT_APP_API_KEY = dn1j4olzNIiHc9SWJmYhRHLR1ytzLQrVc-B0P-kcPzECXQaisAknSQeq70Gnxj2DoLhWwfTnN1YNWDA89bRWbtogs_qvN_gpK8qvvZqPelpOWiUCUg6UZE0SkatsXXYx`
 
