@@ -13,7 +13,7 @@ Senior Project Repository
 5. To install all the necessary Python packages necessary to make this project run, navigate to the `src` folder by doing `cd src` and do `pip install -r requirements.txt`.
 6. Download this file on your system and put it in your `src` folder: https://drive.google.com/file/d/1DAeITx02hzHCJUF0spo0-BgAQcvOPJVB/view.
 7. Some of the endpoints in the backend need to connect to files with a complete path in it. So, navigate to the filepaths in a file that contains all the filepaths in `src/api/utils/keys.py`. 
-8. For lines 5-7 of keys.py, update the filepaths for each of those files to your own complete filepaths (e.g. `Users/yourname/Desktop/...//src/svdpp_las_vegas_existing_user_model.pkl`).
+8. For lines 5-7 of keys.py, update the filepaths for each of those files to your own complete filepaths (e.g. `Users/yourname/Desktop/.../src/svdpp_las_vegas_existing_user_model.pkl` for the pkl file on line 5. Do the same for lines 6 and 7 for the CSV files).
 9. To start the back-end, navigate back to the `src` folder and run the Flask server by entering `python run.py`.
 
 # update keys file
