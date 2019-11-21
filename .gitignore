@@ -20,6 +20,9 @@ yelp_dataset/
 
 # misc
 .DS_Store
+.DS_Store?
+/front-end/.DS_Store
+/front-end/.DS_Store?
 .env.local
 .env
 .env.development.local
