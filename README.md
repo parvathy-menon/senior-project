@@ -20,6 +20,23 @@ Senior Project Repository
 12. Do the same as above for line 289.
 13. To start the back-end, navigate back to the `src` folder and run the Flask server by entering `python run.py`.
 
+# update keys file
+Some of the endpoints in the backend require direct access to files with a direct path. This requires to update "src/api/utils/keys.py" with the following values.
+
+API_KEY = 'dn1j4olzNIiHc9SWJmYhRHLR1ytzLQrVc-B0P-kcPzECXQaisAknSQeq70Gnxj2DoLhWwfTnN1YNWDA89bRWbtogs_qvN_gpK8qvvZqPelpOWiUCUg6UZE0SkatsXXYx'
+API_HOST = 'https://api.yelp.com'
+BUSINESS_PATH = '/v3/businesses/'
+
+The remaining keys, PKL_DIR, CSV_DIR, and FEATURES_DIR will require the file directory of certain files. e.g.
+
+PKL_DIR = '/Users/parvathy/Desktop/senior-project/src/svdpp_las_vegas_existing_user_model.pkl' (should contain file path of pkl file).
+
+CSV_DIR = "/Users/parvathy/Desktop/senior-project/src/us_restaurant_review_lasvegas_nv.csv" (should contain file path of us_restaurant_review_lasvegas_nv.csv)
+
+FEATURES_DIR = "/Users/parvathy/Desktop/senior-project/src/restaurant_features.csv" (should contain file path of restaurant_features.csv)
+
+Populate the keys with appropriate file paths.
+
 # monogoDB information
 web login: https://cloud.mongodb.com/user#/atlas/login
 Login username: yunjunma@gmail.com
