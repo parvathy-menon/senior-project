@@ -41,6 +41,11 @@ router.post('/', (req, res) => {
                 preference.likes_chinese = req.body.likes_chinese;
                 preference.likes_american = req.body.likes_american;
                 preference.likes_vietnamese = req.body.likes_vietnamese;
+                preference.likes_creperies = req.body.likes_creperies;
+                preference.likes_french = req.body.likes_french;
+                preference.likes_thai = req.body.likes_thai;
+                preference.likes_japanese = req.body.likes_japanese;
+                preference.likes_italian = req.body.likes_italian;
 
                 preference.save().then(preference => res.json(preference));
             } else {
@@ -51,7 +56,12 @@ router.post('/', (req, res) => {
                     likes_mexican: req.body.likes_mexican,
                     likes_chinese: req.body.likes_chinese,
                     likes_american: req.body.likes_american,
-                    likes_vietnamese: req.body.likes_vietnamese
+                    likes_vietnamese: req.body.likes_vietnamese,
+                    likes_creperies: req.body.likes_creperies,
+                    likes_french: req.body.likes_french,
+                    likes_thai: req.body.likes_thai,
+                    likes_japanese: req.body.likes_japanese,
+                    likes_italian: req.body.likes_italian
                 });
 
                 newPreference.save().then(preference => res.json(preference));
