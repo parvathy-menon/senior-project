@@ -8,6 +8,7 @@ from api.utils import responses as resp
 from api.models.user import users
 from api.models.newuserdb import newuserbusinessdata
 from api.models.preferences import preferences
+from api.utils.keys import Keys
 import joblib
 import pandas as pd
 import numpy as np
@@ -28,10 +29,6 @@ from flask_cors import CORS, cross_origin
 
 route_path_general = Blueprint("route_path_general", __name__)
 CORS(route_path_general)
-
-API_KEY = "dn1j4olzNIiHc9SWJmYhRHLR1ytzLQrVc-B0P-kcPzECXQaisAknSQeq70Gnxj2DoLhWwfTnN1YNWDA89bRWbtogs_qvN_gpK8qvvZqPelpOWiUCUg6UZE0SkatsXXYx"
-API_HOST = 'https://api.yelp.com'
-BUSINESS_PATH = '/v3/businesses/'
 
 @route_path_general.route('/v1.0/getuser/<string:user_id>', methods=['GET'])
 def get_user(user_id):
@@ -75,8 +72,8 @@ def generate_recommendations(user_id):
 @route_path_general.route('/v1.0/generateusers/', methods=['GET']) #generate ten random users
 def generate_users():
     try:
-        svdpp = joblib.load('src/svdpp_las_vegas_existing_user_model.pkl') #need to put ENTIRE filepath here (e.g. /Users/name/.../src/svdpp_las_vegas_existing_user_model.pkl)
-        us_restaurant_review_lasvegas_nv = pd.read_csv("src/us_restaurant_review_lasvegas_nv.csv") #need to put ENTIRE filepath here (e.g. /Users/name/.../src/us_restaurant_review_lasvegas_nv.csv)
+        svdpp = joblib.load(Keys.PKL_DIR) #need to put ENTIRE filepath here (e.g. /Users/name/.../src/svdpp_las_vegas_existing_user_model.pkl)
+        us_restaurant_review_lasvegas_nv = pd.read_csv(Keys.CSV_DIR) #need to put ENTIRE filepath here (e.g. /Users/name/.../src/us_restaurant_review_lasvegas_nv.csv)
         user_ids = us_restaurant_review_lasvegas_nv['user_id'].unique().tolist()
         return response_with(resp.SUCCESS_200, value={"users": user_ids[0:10]})
     except Exception:
@@ -142,20 +139,20 @@ def generate_newuser_business_data():
         return response_with(resp.INVALID_INPUT_422)
 
 def __getPrediction():
-    svdpp = joblib.load('src/svdpp_las_vegas_existing_user_model.pkl'); #need to put ENTIRE filepath here (e.g. /Users/name/.../src/svdpp_las_vegas_existing_user_model.pkl)
+    svdpp = joblib.load(Keys.PKL_DIR); #need to put ENTIRE filepath here (e.g. /Users/name/.../src/svdpp_las_vegas_existing_user_model.pkl)
     predictions_svdpp = svdpp.predict('3nDUQBjKyVor5wV0reJChg', '6fPQJq4f_yiq1NHn0fd11Q')
     return predictions_svdpp
 
 def get_business(business_id): #calling Yelp endpoint to get business data from business ID
-    business_path = BUSINESS_PATH + business_id
-    url = API_HOST + business_path
-    headers = {'Authorization': f"Bearer {API_KEY}"}
+    business_path = Keys.BUSINESS_PATH + business_id
+    url = Keys.API_HOST + business_path
+    headers = {'Authorization': f"Bearer {Keys.API_KEY}"}
     response = requests.get(url, headers=headers)
     return response.json()
 
 def get_recommendation_list(user_id): #get list of recommendations for existing user using SVDPP
-    svdpp = joblib.load('src/svdpp_las_vegas_existing_user_model.pkl') #need to put ENTIRE filepath here (e.g. /Users/name/.../src/svdpp_las_vegas_existing_user_model.pkl)
-    us_restaurant_review_lasvegas_nv = pd.read_csv("src/us_restaurant_review_lasvegas_nv.csv") #need to put ENTIRE filepath here (e.g. /Users/name/.../src/us_restaurant_review_lasvegas_nv.csv)
+    svdpp = joblib.load(Keys.PKL_DIR) #need to put ENTIRE filepath here (e.g. /Users/name/.../src/svdpp_las_vegas_existing_user_model.pkl)
+    us_restaurant_review_lasvegas_nv = pd.read_csv(Keys.CSV_DIR) #need to put ENTIRE filepath here (e.g. /Users/name/.../src/us_restaurant_review_lasvegas_nv.csv)
     business_ids = us_restaurant_review_lasvegas_nv['business_id'].unique()
     business_ids_rated_by_user = us_restaurant_review_lasvegas_nv.loc[us_restaurant_review_lasvegas_nv['user_id'] == user_id, 'business_id']
     business_ids_to_predict = np.setdiff1d(business_ids, business_ids_rated_by_user)
@@ -286,7 +283,7 @@ def get_business_attributes(list_of_jsons): #given a list of json's, sanitize js
 
 def get_recommendation_new_user(likes_japanese, likes_mexican, likes_italian, likes_american, likes_chinese, likes_thai, likes_creperies, likes_french):
     userfeatures = [likes_japanese, likes_mexican, likes_italian, likes_american, likes_chinese, likes_thai, likes_creperies, likes_french]
-    restaurant_features = pd.read_csv("src/restaurant_features.csv")
+    restaurant_features = pd.read_csv(Keys.FEATURES_DIR)
     new_user_restaurant_jac_sim = pd.DataFrame( columns=['jac_sim','business_id'])
     for index, row in restaurant_features.iterrows():
         jac_sim = jaccard_similarity_score(userfeatures,[row['Japanese'], row['Mexican'],row['Italian'], row['American'],row['Chinese'], row['Thai'],row['Creperies'], row['French']])
