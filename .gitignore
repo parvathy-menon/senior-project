@@ -8,6 +8,7 @@ yelp_dataset/
 /src/api/__pycache__
 /src/api/routes/__pycache__
 /src/api/utils/__pycache__
+/src/api/models/__pyache__
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
